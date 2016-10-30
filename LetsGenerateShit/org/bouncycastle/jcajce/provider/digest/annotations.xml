@@ -1,0 +1,5 @@
+<root>
+    <item name='org.bouncycastle.jcajce.provider.digest.RIPEMD160'>
+        <annotation name='java.lang.Deprecated'/>
+    </item>
+</root>
