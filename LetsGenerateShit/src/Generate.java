@@ -82,14 +82,26 @@ public class Generate {
         System.arraycopy(dd.getX().toBigInteger().toByteArray(), 0, publickey, 32-dd.getX().toBigInteger().toByteArray().length+1, dd.getX().toBigInteger().toByteArray().length);
         publickey[0]=4;
 
-        System.out.println("HELLO " + toHex(SHA256hash(publickey)));
+        byte[] newValue256 = SHA256hash(publickey);
+        System.out.println("SHA256 " + toHex(newValue256));
+        byte[] newValue160 = RIPEMD160(newValue256);
+        System.out.println("RIPEMD160 " + toHex(newValue160));
+        byte[] newValueNetwork = AddNetworkBytes(newValue160);
+        System.out.println("ADDBYTES " + toHex(newValueNetwork));
 
-        byte[] newValue = SHA256hash(publickey);
+        byte[] re_SHA256_First = SHA256hash(newValueNetwork);
+        System.out.println("SHA256Again " + toHex(re_SHA256_First));
+        byte[] re_SHA256_Second = SHA256hash(re_SHA256_First);
+        System.out.println("SHA256AgainSecondTime " + toHex(re_SHA256_Second));
 
-        System.out.println("HELLO160 " + toHex(RIPEMD160(newValue)));
+        byte[] grabFourBytes = GrabFirstFourBytes(re_SHA256_Second);
+        System.out.println("GrabFirstFour " + toHex(grabFourBytes));
 
+        byte[] AddSeven = AddSevenEndOfNetworkByte(grabFourBytes, newValueNetwork);
+        System.out.println("AddFourBytesToNetwork " + toHex(AddSeven));
 
-
+        String WIF = Base58.encode(AddSeven);
+        System.out.println("Bitcoin Address " + WIF);
 
     }
 
@@ -107,8 +119,36 @@ public class Generate {
         byte[] retValue=new byte[digester.getDigestSize()];
         digester.update(enterKey, 0, enterKey.length);
         digester.doFinal(retValue, 0);
-       // byte[] version = new byte[]{0x00};
-       // return concateByteArray(version,retValue);
         return retValue;
+    }
+
+    private byte[] AddNetworkBytes(byte[] enterKey){
+
+        byte[] networkByte = {(byte) 0x0 };
+        byte[] newByteArray = new byte[networkByte.length + enterKey.length];
+        System.arraycopy(networkByte, 0, newByteArray, 0, networkByte.length);
+        System.arraycopy(enterKey, 0, newByteArray, networkByte.length, enterKey.length);
+
+        return newByteArray;
+    }
+
+    private byte[] GrabFirstFourBytes(byte[] enterKey){
+
+        byte[] firstFourBytes = new byte[4];
+
+        for(int i = 0; i < firstFourBytes.length; i++){
+            firstFourBytes[i] = enterKey[i];
+        }
+
+        return  firstFourBytes;
+    }
+
+    private byte[] AddSevenEndOfNetworkByte(byte[] firstFour, byte[] NetworkByteArray){
+
+        byte[] newByteArray = new byte[NetworkByteArray.length + firstFour.length];
+        System.arraycopy(NetworkByteArray, 0, newByteArray, 0, NetworkByteArray.length);
+        System.arraycopy(firstFour, 0, newByteArray, NetworkByteArray.length, firstFour.length);
+
+        return newByteArray;
     }
 }
