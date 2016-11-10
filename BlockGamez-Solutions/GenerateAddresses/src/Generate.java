@@ -33,9 +33,6 @@ public class Generate {
     }
 
 
-    // Tues - Brian flies in around 5pm
-    // Stay overnight on Tues.
-    // Wed - 1/2 day - go down to perrryburg then drive up
 
 
     public static String toHex(byte[] data) {
