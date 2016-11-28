@@ -77,14 +77,6 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        try {
-            Log.d("WIF ", generatePubPriv());
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
 
     }
 
@@ -140,11 +132,27 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+            try {
+                Log.d("WIF22 ", generatePubPriv());
+
+                //Set public textview to public bitcoin address
+                TextView publicBitcoinAddress = (TextView) rootView.findViewById(R.id.publicBitcoinAddress);
+                publicBitcoinAddress.setText(generatePubPriv());
+
+
+
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
             return rootView;
         }
     }
+
+
+
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -183,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public String generatePubPriv() throws NoSuchAlgorithmException, IOException {
+    public static String generatePubPriv() throws NoSuchAlgorithmException, IOException {
 
         X9ECParameters ecp = SECNamedCurves.getByName("secp256k1");
         ECDomainParameters domainParams = new ECDomainParameters(ecp.getCurve(),
@@ -252,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
         return sb.toString();
     }
 
-    private byte[] SHA256hash(byte[] enterKey){
+    private static byte[] SHA256hash(byte[] enterKey){
         SHA256Digest digester=new SHA256Digest();
         byte[] retValue=new byte[digester.getDigestSize()];
         digester.update(enterKey, 0, enterKey.length);
@@ -261,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private byte[] RIPEMD160(byte[] enterKey){
+    private static byte[] RIPEMD160(byte[] enterKey){
         RIPEMD160Digest digester = new RIPEMD160Digest();
         byte[] retValue=new byte[digester.getDigestSize()];
         digester.update(enterKey, 0, enterKey.length);
@@ -269,7 +277,7 @@ public class MainActivity extends AppCompatActivity {
         return retValue;
     }
 
-    private byte[] AddNetworkBytes(byte[] enterKey){
+    private static byte[] AddNetworkBytes(byte[] enterKey){
 
         byte[] networkByte = {(byte) 0x0 };
         byte[] newByteArray = new byte[networkByte.length + enterKey.length];
@@ -279,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
         return newByteArray;
     }
 
-    private byte[] GrabFirstFourBytes(byte[] enterKey){
+    private static byte[] GrabFirstFourBytes(byte[] enterKey){
 
         byte[] firstFourBytes = new byte[4];
 
@@ -290,7 +298,7 @@ public class MainActivity extends AppCompatActivity {
         return  firstFourBytes;
     }
 
-    private byte[] AddSevenEndOfNetworkByte(byte[] firstFour, byte[] NetworkByteArray){
+    private static byte[] AddSevenEndOfNetworkByte(byte[] firstFour, byte[] NetworkByteArray){
 
         byte[] newByteArray = new byte[NetworkByteArray.length + firstFour.length];
         System.arraycopy(NetworkByteArray, 0, newByteArray, 0, NetworkByteArray.length);
