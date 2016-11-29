@@ -1,5 +1,6 @@
 package com.example.tief.blockgamezandroid;
 
+import android.net.Uri;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -38,7 +39,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.Security;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Transactions_Fragment.OnFragmentInteractionListener, Merchants_Fragment.OnFragmentInteractionListener, Address_Fragment.OnFragmentInteractionListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -101,6 +102,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+        // omit for later to pass info between fragments OAKY
     }
 
     /**
@@ -168,6 +174,19 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
+
+            switch (position){
+
+                case 0:
+                    Address_Fragment tab0 = new Address_Fragment();
+                    return tab0;
+                case 1:
+                    Transactions_Fragment tab1 = new Transactions_Fragment();
+                    return tab1;
+                case 2:
+                    Merchants_Fragment tab2 = new Merchants_Fragment();
+                    return tab2;
+            }
             return PlaceholderFragment.newInstance(position + 1);
         }
 
