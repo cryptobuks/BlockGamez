@@ -8,29 +8,5 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.tief.blockgamezandroid.MainActivity$PlaceholderFragment">
 
-    <Button
-        android:text="Unlock"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/button" />
 
-    <TextView
-        android:text="Receive Address (Public): "
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/textView" />
-
-    <TextView
-        android:text=""
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/publicBitcoinAddress" />
 </RelativeLayout>
