@@ -7,10 +7,10 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/Downloads/bcprov-ext-jdk15on-155.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/bcprov-ext-jdk15on-155.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

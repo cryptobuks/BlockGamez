@@ -50,12 +50,25 @@ public class Generate {
                 ecp.getG(), ecp.getN(), ecp.getH(),
                 ecp.getSeed());
 
+        /**
+         *
+         * SET THIS STRING TO WHATEVER YOU WANT
+         *
+         */
+        String UserSetString = "This string will generate the same bitcoin address";
+        byte[] seed = UserSetString.getBytes();
+
+
         // Generate a private key and a public key
         AsymmetricCipherKeyPair keyPair;
-        ECKeyGenerationParameters keyGenParams = new ECKeyGenerationParameters(domainParams, new SecureRandom());
+        ECKeyGenerationParameters keyGenParams = new ECKeyGenerationParameters(domainParams, new SecureRandom(seed));
         ECKeyPairGenerator generator = new ECKeyPairGenerator();
         generator.init(keyGenParams);
         keyPair = generator.generateKeyPair();
+
+
+
+
 
         ECPrivateKeyParameters privateKey = (ECPrivateKeyParameters) keyPair.getPrivate();
         ECPublicKeyParameters publicKey = (ECPublicKeyParameters) keyPair.getPublic();
