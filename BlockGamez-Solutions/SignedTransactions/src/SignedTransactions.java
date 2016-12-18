@@ -2,6 +2,7 @@
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.sun.deploy.net.HttpResponse;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,14 +52,8 @@ public class SignedTransactions {
     }
 
 
+    public String parseUrlInJson(String grabJsonValue, String sURL) throws IOException {
 
-    public void NewTransaction(String recipientAddrress, String senderAddress, BigDecimal amount, BigDecimal transactionFee) throws IOException {
-
-
-        System.out.println("About to send " + amount + " Bitcoin to address " + recipientAddrress + " from address " + senderAddress + " with a transaction fee of: " + transactionFee + "\n");
-
-        System.out.println("Pulling info from blockchain: ");
-        String sURL = "https://blockchain.info/address/" + senderAddress + "?format=json"; //just a string
 
         // Connect to the URL using java's native library
         URL url = new URL(sURL);
@@ -69,19 +64,30 @@ public class SignedTransactions {
         JsonParser jp = new JsonParser(); //from gson
         JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent())); //Convert the input stream to a json element
         JsonObject rootobj = root.getAsJsonObject(); //May be an array, may be an object.
-        String finalBalanceString = rootobj.get("final_balance").getAsString(); //just grab the zipcode
-        //Convert finalBalance to BigDecimal to get final balance
-        BigDecimal finalBalanceBD = new BigDecimal(finalBalanceString).divide(SATOSHI_PER_BITCOIN());
+        String grabbedJsonValue = rootobj.get(grabJsonValue).getAsString(); //just grab the zipcode
+        return grabbedJsonValue;
+
+    }
+
+
+    public void NewTransaction(String recipientAddrress, String senderAddress, BigDecimal amount, BigDecimal transactionFee) throws IOException {
+
+
+        System.out.println("About to send " + amount + " Bitcoin to address " + recipientAddrress + " from address " + senderAddress + " with a transaction fee of: " + transactionFee + "\n");
+
+
+        /** URLs to blockchain's JSON Values **/
+        String sFinalBalance = "https://blockchain.info/address/" + senderAddress + "?format=json"; //just a string
+       // String sUnspentOutputs = "https://blockchain.info/unspent?active=" + senderAddress + "&format=json";
+
+        BigDecimal finalBalanceBD = new BigDecimal(parseUrlInJson("final_balance", sFinalBalance)).divide(SATOSHI_PER_BITCOIN());
+       // BigDecimal finalUnspentOutputs = new BigDecimal(parseUrlInJson("unspent_outputs",sUnspentOutputs));
 
 
         System.out.println("Final Balance of Sender: " + finalBalanceBD);
+       // System.out.println("Final Unspent Outputs: " + finalUnspentOutputs);
 
         int res = finalBalanceBD.compareTo(amount.add(transactionFee));
-
-//        System.out.println(finalBalanceBD);
-//        System.out.println(amount.add(transactionFee));
-//        System.out.println(res);
-
         if(res == -1){
 
             /** THROW EXCEPTION IF FUNDS ARE NOT AVAILABLE, COMMENTING THIS OUT FOR TESTING **/
