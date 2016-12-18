@@ -163,7 +163,7 @@ public class Generate {
         return WIF;
     }
 
-    public String generatePubPriv(String UserSetString) throws NoSuchAlgorithmException, IOException {
+    public void generatePubPriv(String UserSetString) throws NoSuchAlgorithmException, IOException {
 
         AsymmetricCipherKeyPair keyPair = generateKeyPair(UserSetString);
 
@@ -196,8 +196,7 @@ public class Generate {
         byte[] public_Key = toByteArray(finalPublic);
 
         privateToWif(privateKeyBytes);
-
-        return publicToWif(public_Key);
+        publicToWif(public_Key);
 
     }
 
