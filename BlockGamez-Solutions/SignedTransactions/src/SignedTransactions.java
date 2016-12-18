@@ -65,6 +65,7 @@ public class SignedTransactions {
         JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent())); //Convert the input stream to a json element
         JsonObject rootobj = root.getAsJsonObject(); //May be an array, may be an object.
         String grabbedJsonValue = rootobj.get(grabJsonValue).getAsString(); //just grab the zipcode
+
         return grabbedJsonValue;
 
     }
@@ -78,21 +79,29 @@ public class SignedTransactions {
 
         /** URLs to blockchain's JSON Values **/
         String sFinalBalance = "https://blockchain.info/address/" + senderAddress + "?format=json"; //just a string
-       // String sUnspentOutputs = "https://blockchain.info/unspent?active=" + senderAddress + "&format=json";
+        String sUnspentOutputs = "https://blockchain.info/unspent?active=" + senderAddress + "&format=json";
 
-        BigDecimal finalBalanceBD = new BigDecimal(parseUrlInJson("final_balance", sFinalBalance)).divide(SATOSHI_PER_BITCOIN());
-       // BigDecimal finalUnspentOutputs = new BigDecimal(parseUrlInJson("unspent_outputs",sUnspentOutputs));
+        BigDecimal finalBalanceBD = null;
+        BigDecimal finalUnspentOutputs = null;
 
+        try{
 
-        System.out.println("Final Balance of Sender: " + finalBalanceBD);
-       // System.out.println("Final Unspent Outputs: " + finalUnspentOutputs);
+            finalBalanceBD = new BigDecimal(parseUrlInJson("final_balance", sFinalBalance)).divide(SATOSHI_PER_BITCOIN());
+            finalUnspentOutputs = new BigDecimal(parseUrlInJson("unspent_outputs",sUnspentOutputs));
+            }
+        catch(IOException e){
+            System.out.println("IO EXCEPTION>>>> " + e.toString());
+        } finally {
+            System.out.println("Final Balance of Sender: " + finalBalanceBD);
+            System.out.println("Final Unspent Outputs: " + finalUnspentOutputs);
+        }
 
         int res = finalBalanceBD.compareTo(amount.add(transactionFee));
         if(res == -1){
 
-            /** THROW EXCEPTION IF FUNDS ARE NOT AVAILABLE, COMMENTING THIS OUT FOR TESTING **/
+            /** ######################## THROW EXCEPTION IF FUNDS ARE NOT AVAILABLE, COMMENTING THIS OUT FOR TESTING ##########################**/
             //throw new IllegalArgumentException("Insufficient funds in Wallet");
-
+            /** ###############################################################################################################################**/
         }
 
 
