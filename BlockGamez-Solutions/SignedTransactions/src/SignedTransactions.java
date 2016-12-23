@@ -2,7 +2,6 @@
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.sun.deploy.net.HttpResponse;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,6 +10,7 @@ import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 
 /**
  * Created by Tief on 12/17/2016.
@@ -104,7 +104,8 @@ public class SignedTransactions {
             /** ###############################################################################################################################**/
         }
 
-
+        BigDecimal[] val = new BigDecimal[10];
+        Arrays.fill(val, BigDecimal.ZERO);
 
     }
 
