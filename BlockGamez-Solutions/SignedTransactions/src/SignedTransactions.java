@@ -90,7 +90,7 @@ public class SignedTransactions {
         }
         // Need to check for pending payments, will do so later when testing...
         System.out.println(UnspentTransactions());
-        System.out.println(SignandVerify());
+        SignandVerify(senderAddress,recipientAddrress);
     }
 
     /** # Need to check wallet if there is a result of one or more incoming payments. **/
@@ -100,8 +100,25 @@ public class SignedTransactions {
         return value;
 
     }
+
+    public static String toHex(byte[] data) {
+        StringBuilder sb = new StringBuilder();
+        for (byte b: data) {
+            sb.append(String.format("%02x", b&0xff));
+        }
+        return sb.toString();
+    }
+
+
     /** Sign and verify the transaction **/
-    public String SignandVerify(){
+    public String SignandVerify(String senderAddress, String recipientAddress){
+
+        byte[] senderHexByte = Base58.decode(senderAddress);
+        byte[] recipientHexByte = Base58.decode(recipientAddress);
+        String senderHex = toHex(senderHexByte);
+        String recipientHex = toHex(recipientHexByte);
+        
+
 
         /**
         w2 = Bitcoin.decode_base58(@secret_wif)
