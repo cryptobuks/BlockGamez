@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/GenerateAddresses.iml" filepath="$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/GenerateAddresses.iml" />
+      <module fileurl="file://$PROJECT_DIR$/BlockGamez-Solutions/SignedTransactions/SignedTransactions.iml" filepath="$PROJECT_DIR$/BlockGamez-Solutions/SignedTransactions/SignedTransactions.iml" />
       <module fileurl="file://$PROJECT_DIR$/BlockGamez-Solutions/UnsignedTransactions/UnsignedTransactions.iml" filepath="$PROJECT_DIR$/BlockGamez-Solutions/UnsignedTransactions/UnsignedTransactions.iml" />
       <module fileurl="file://$PROJECT_DIR$/BlockGamez-Android/BlockGamezAndroid/app/src/androidTest/androidTest.iml" filepath="$PROJECT_DIR$/BlockGamez-Android/BlockGamezAndroid/app/src/androidTest/androidTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/BlockGamez-Android/BlockGamezAndroid/app/src/main/main.iml" filepath="$PROJECT_DIR$/BlockGamez-Android/BlockGamezAndroid/app/src/main/main.iml" />

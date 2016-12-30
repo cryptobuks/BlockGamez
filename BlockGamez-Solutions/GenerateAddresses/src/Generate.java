@@ -27,6 +27,7 @@ import org.junit.*;
 
 
 
+
 /**
  * Created by tiefenb7 on 10/29/2016.
  *
@@ -38,32 +39,22 @@ public class Generate {
     String first = "first", second = "second", third = "third", fourth = "forth", fifth = "fifth", sixth = "sixth";
     private X9ECParameters ecp = SECNamedCurves.getByName("secp256k1");
 
-    public static void main(String[] argv) throws IOException, NoSuchAlgorithmException {
-
-        Generate test = new Generate();
-        test.generatePubPriv("HelloWorld!!!!!");
-
-
-    }
+    public static void main(String[] argv) throws IOException, NoSuchAlgorithmException {}
 
 
 
 
     public static String toHex(byte[] data) {
-        StringBuilder sb = new StringBuilder();
-        for (byte b: data) {
-            sb.append(String.format("%02x", b&0xff));
-        }
-        return sb.toString();
+        return ByteUtil.byteArrayToHexString(data);
     }
 
     public static String toHexString(byte[] array){
-        return DatatypeConverter.printHexBinary(array);
+        return ByteUtil.byteArrayToHexString(array);
     }
 
     public static byte[] toByteArray(String byteString)
     {
-        return DatatypeConverter.parseHexBinary(byteString);
+        return ByteUtil.stringToByteArray(byteString);
     }
 
 
@@ -249,10 +240,7 @@ public class Generate {
 
     private byte[] concateByteArrays(byte[] frontByteArray,byte[] backByteArray)
     {
-        byte[] newByteArray = new byte[frontByteArray.length+backByteArray.length];
-        System.arraycopy(frontByteArray,0,newByteArray,0,frontByteArray.length);
-        System.arraycopy(backByteArray,0,newByteArray,frontByteArray.length,backByteArray.length);
-        return newByteArray;
+        return ByteUtil.concateByteArrays(frontByteArray,backByteArray);
     }
 
     private byte[] Add80Byte(byte[] enterKey)
@@ -264,9 +252,6 @@ public class Generate {
     private byte[] AddNetworkBytes(byte[] enterKey){
 
         byte[] networkByte = {(byte) 0x0 };
-        /*byte[] newByteArray = new byte[networkByte.length + enterKey.length];
-        System.arraycopy(networkByte, 0, newByteArray, 0, networkByte.length);
-        System.arraycopy(enterKey, 0, newByteArray, networkByte.length, enterKey.length);*/
         return concateByteArrays(networkByte,enterKey);
     }
 
@@ -281,12 +266,8 @@ public class Generate {
         return  firstFourBytes;
     }
 
-    private byte[] AddSevenEndOfNetworkByte(byte[] firstFour, byte[] NetworkByteArray){
-
-        /*byte[] newByteArray = new byte[NetworkByteArray.length + firstFour.length];
-        System.arraycopy(NetworkByteArray, 0, newByteArray, 0, NetworkByteArray.length);
-        System.arraycopy(firstFour, 0, newByteArray, NetworkByteArray.length, firstFour.length);*/
-
+    private byte[] AddSevenEndOfNetworkByte(byte[] firstFour, byte[] NetworkByteArray)
+    {
         return concateByteArrays(NetworkByteArray,firstFour);
     }
 
