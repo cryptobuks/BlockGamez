@@ -222,11 +222,12 @@ public class Generate {
     }
 
     private byte[] SHA256hash(byte[] enterKey){
-        SHA256Digest digester=new SHA256Digest();
+        /*SHA256Digest digester=new SHA256Digest();
         byte[] retValue=new byte[digester.getDigestSize()];
         digester.update(enterKey, 0, enterKey.length);
         digester.doFinal(retValue, 0);
-        return retValue;
+        return retValue;*/
+        return ByteUtil.SHA256hash(enterKey);
     }
 
 
