@@ -120,7 +120,7 @@ public class SignedTransactions {
             JsonElement value = getJsonValue.get("value"); inputs[k+2] = "scriptLength: " + null;
             String scriptSig = null; inputs[k+3] = "scriptSig: " + scriptSig; //make this blank, will sign later
             String sequenceNO = "ffffffff"; inputs[k+4] = "sequence_no: " + sequenceNO;
-            k = k + 5; //This needs to count by 4, to properly set all previous transactions at the correct index, 5 => 5 values needed for indexing during each iteration.
+            k = k + 5; //This needs to count by 5, to properly set all previous transactions at the correct index, 5 => 5 values needed for indexing during each iteration.
             amount = new BigDecimal(value.toString()).divide(SATOSHI_PER_BITCOIN());
             input_total = input_total.add(amount);
             if((input_total.compareTo(amount.add(transactionFee)) == 0) || (input_total.compareTo(amount.add(transactionFee))) == 1){
@@ -207,10 +207,45 @@ public class SignedTransactions {
         int inputsValueSize = k;
 
 
-        String value1 = "Need to sign and verify the transaction -> Skipping...";
+        /** Not Efficient, please change later due to busy fricken weekend **/
+        int y = 2;
+        int g = 3;
+
+        while(inputsValueSize > y){
+            inputs[y] = "change";
+            inputs[g] = scriptPubKey;
+            y = y + 5;
+            g = g + 5;
+        }
+
+        // Create the necessary values for a transaction
+        String[] transaction = {"version: 1", "in_counter:", "inputs: ", "out_counter: ", "outputs: ", "lock_time: ", "hash_code_type: "};
+
+        /** Serialization Starts Here... **/
+        serialize_transaction(transaction);
+
+        String value1 = "return something lol.";
         return value1;
     }
 
+    public String little_endian_hex_of_n_bytes(int i, int n){
+
+        String filler = "";
+
+        return filler;
+    }
+
+    public String parse_script(String script){
+
+        return script;
+
+    }
+
+    public String[] serialize_transaction(String[] transaction){
+
+        return transaction;
+
+    }
 
     private byte[] SHA256hash(byte[] enterKey){
         return ByteUtil.SHA256hash(enterKey);

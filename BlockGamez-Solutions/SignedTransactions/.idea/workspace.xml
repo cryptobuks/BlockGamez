@@ -22,8 +22,8 @@
       <file leaf-file-name="SignedTransactions.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/SignedTransactions.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="351">
-              <caret line="43" column="89" lean-forward="false" selection-start-line="43" selection-start-column="89" selection-end-line="43" selection-end-column="89" />
+            <state relative-caret-position="389">
+              <caret line="48" column="35" lean-forward="true" selection-start-line="48" selection-start-column="35" selection-end-line="48" selection-end-column="35" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -34,8 +34,8 @@
       <file leaf-file-name="SignedTransactionsTest.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Test/SignedTransactionsTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="11" column="0" lean-forward="true" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+            <state relative-caret-position="170">
+              <caret line="16" column="0" lean-forward="false" selection-start-line="16" selection-start-column="0" selection-end-line="21" selection-end-column="95" />
               <folding />
             </state>
           </provider>
@@ -69,8 +69,8 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/src/Base58.java" />
-        <option value="$PROJECT_DIR$/src/SignedTransactions.java" />
         <option value="$PROJECT_DIR$/Test/SignedTransactionsTest.java" />
+        <option value="$PROJECT_DIR$/src/SignedTransactions.java" />
       </list>
     </option>
   </component>
@@ -591,8 +591,8 @@
     <entry file="file://$PROJECT_DIR$/Test/SignedTransactionsTest" />
     <entry file="file://$PROJECT_DIR$/src/SignedTransactions.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="351">
-          <caret line="43" column="89" lean-forward="false" selection-start-line="43" selection-start-column="89" selection-end-line="43" selection-end-column="89" />
+        <state relative-caret-position="389">
+          <caret line="48" column="35" lean-forward="true" selection-start-line="48" selection-start-column="35" selection-end-line="48" selection-end-column="35" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -601,8 +601,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Test/SignedTransactionsTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="11" column="0" lean-forward="true" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+        <state relative-caret-position="170">
+          <caret line="16" column="0" lean-forward="false" selection-start-line="16" selection-start-column="0" selection-end-line="21" selection-end-column="95" />
           <folding />
         </state>
       </provider>
