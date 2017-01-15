@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.MessageDigest;
@@ -38,8 +39,9 @@ public class SignedTransactions {
     BigDecimal amount = new BigDecimal("0.01");
     BigDecimal transactionFee = new BigDecimal("0.0005");
     BigDecimal change = new BigDecimal("0");
-
-    public static void main(String args[]) throws IOException {} //Creating Tests
+    String[] inputs;
+    int k = 0;
+    public static void main(String args[]) throws IOException, NoSuchAlgorithmException {} //Creating Tests
 
     //Add the SATOSHI Constant (100,000,000 Satoshi = 1 BTC)
     public BigDecimal SATOSHI_PER_BITCOIN(){
@@ -60,7 +62,7 @@ public class SignedTransactions {
         return grabbedJsonValue;
     }
 
-    public void NewTransaction(String recipientAddress, String senderAddress, String senderprivateKeyWIF) throws IOException {
+    public void NewTransaction(String recipientAddress, String senderAddress, String senderPrivateWIF) throws IOException, NoSuchAlgorithmException {
         System.out.println("About to send " + amount + " Bitcoin to address " + recipientAddress + " from address " + senderAddress + " with a transaction fee of: " + transactionFee + "\n");
         /** URLs to blockchain's JSON Values **/
         String sFinalBalance = "https://blockchain.info/address/" + senderAddress + "?format=json"; //just a string
@@ -83,14 +85,16 @@ public class SignedTransactions {
         }
         // Need to check for pending payments, will do so later when testing...
         UnspentTransactions( transactionFee, senderAddress); // finalUnspentOutputs,
-        SignandVerify(senderAddress,recipientAddress, amount);
+        SignandVerify(senderAddress,recipientAddress, amount, senderPrivateWIF);
     }
 
     /** # Need to check wallet if there is a result of one or more incoming payments. **/
     public String[] UnspentTransactions( BigDecimal transactionFee, String senderAddress) throws IOException {  //BigDecimal jsonGrabbedUnspentOutputs,
-        String[] holdValues = new String[5];
+        String[] holdValues = new String[1000];
         String sUnspentOutputs = "https://blockchain.info/unspent?active=" + senderAddress + "&format=json";
         String sURL = sUnspentOutputs; //just a string
+
+        System.out.println(sUnspentOutputs);
 
         // Connect to the URL using java's native library
         URL url = new URL(sURL);
@@ -104,16 +108,19 @@ public class SignedTransactions {
         JsonObject rootobj = root.getAsJsonObject();
         JsonArray unspentoutputs = rootobj.get("unspent_outputs").getAsJsonArray();
         Integer sizeOfUnspentOutputs = unspentoutputs.size();
-        String[] inputs = new String[sizeOfUnspentOutputs]; // create string array to hold all values of unspent outputs
+        inputs = new String[sizeOfUnspentOutputs]; // create string array to hold all values of unspent outputs
         BigDecimal input_total = new BigDecimal("0");
+
         for(int i = 0; i <= sizeOfUnspentOutputs - 1; i++){
+
             JsonElement getFirstJsonString = unspentoutputs.get(i);
             JsonObject getJsonValue = getFirstJsonString.getAsJsonObject();
-            JsonElement previousTx = getJsonValue.get("tx_hash_big_endian"); holdValues[0] = previousTx.toString();
-            JsonElement index = getJsonValue.get("tx_output_n"); holdValues[1] = index.toString();
-            JsonElement value = getJsonValue.get("value"); holdValues[2] = value.toString();
-            String scriptSig = ""; holdValues[3] = scriptSig; //make this blank, will sign later
-
+            JsonElement previousTx = getJsonValue.get("tx_hash_big_endian"); inputs[k] = "previousTx: " + previousTx;
+            JsonElement index = getJsonValue.get("tx_output_n"); inputs[k+1] = "index: " + index;
+            JsonElement value = getJsonValue.get("value"); inputs[k+2] = "scriptLength: " + null;
+            String scriptSig = null; inputs[k+3] = "scriptSig: " + scriptSig; //make this blank, will sign later
+            String sequenceNO = "ffffffff"; inputs[k+4] = "sequence_no: " + sequenceNO;
+            k = k + 5; //This needs to count by 4, to properly set all previous transactions at the correct index, 5 => 5 values needed for indexing during each iteration.
             amount = new BigDecimal(value.toString()).divide(SATOSHI_PER_BITCOIN());
             input_total = input_total.add(amount);
             if((input_total.compareTo(amount.add(transactionFee)) == 0) || (input_total.compareTo(amount.add(transactionFee))) == 1){
@@ -138,9 +145,17 @@ public class SignedTransactions {
         return sb.toString();
     }
 
+    public static String toHexString(byte[] array){
+        return ByteUtil.byteArrayToHexString(array);
+    }
+
+    public static byte[] toByteArray(String byteString)
+    {
+        return ByteUtil.stringToByteArray(byteString);
+    }
 
     /** Sign and verify the transaction **/
-    public String SignandVerify(String senderAddress, String recipientAddress, BigDecimal amount){
+    public String SignandVerify(String senderAddress, String recipientAddress, BigDecimal amount, String senderPrivateWIF) throws IOException, NoSuchAlgorithmException {
         /** Payment Scripts: https://en.bitcoin.it/wiki/Script **/
         String OP_DUP = "OP_DUP"; //Duplicates the top stack item.
         String OP_HASH160 = "OP_HASH160"; //The input is hashed twice: first with SHA-256 and then with RIPEMD-160.
@@ -158,25 +173,58 @@ public class SignedTransactions {
         String recipientHex = toHex(recipientHexByte);
         Integer size;
         String sizeToBase16, scriptPubKey;
-        
+        String[] outputs = new String[2];
+
+
+        size = (((senderHex.substring(2, senderHex.length() - 8)).length()) / 2);
+        sizeToBase16 = size.toString(size, 16);
+        scriptPubKey = OP_DUP + " " + OP_HASH160 + " " + sizeToBase16 + " " + (senderHex.substring(2, senderHex.length() - 8)) + " " + OP_EQUALVERIFY + " " + OP_CHECKSIG;
+        outputs[0] = "value: " + amount + "," + scriptPubKey;
+
+
         // the amount to transfer, we are leaving out the leading zeros and the 4 byte checksum.
         if(change.compareTo(BigDecimal.ZERO) > 0){
            // value = amount;
             size = (((recipientHex.substring(2, recipientHex.length() - 8)).length()) / 2);
             sizeToBase16 = size.toString(size, 16);
             scriptPubKey = OP_DUP + " " + OP_HASH160 + " " + sizeToBase16 + " " + (recipientHex.substring(2, recipientHex.length() - 8)) + " " + OP_EQUALVERIFY + " " + OP_CHECKSIG;
+            outputs[1] = "value: " + change + "," + scriptPubKey;
         }
-        else{
 
-            size = (((senderHex.substring(2, senderHex.length() - 8)).length()) / 2);
-            sizeToBase16 = size.toString(size, 16);
-            scriptPubKey = OP_DUP + " " + OP_HASH160 + " " + sizeToBase16 + " " + (senderHex.substring(2, senderHex.length() - 8)) + " " + OP_EQUALVERIFY + " " + OP_CHECKSIG;
-        }
-        System.out.println(scriptPubKey);
+       // generatePubPriv("sfsdf");
+//        X9ECParameters ecp = SECNamedCurves.getByName("secp256k1");
+//        ECDomainParameters domainParams = new ECDomainParameters(ecp.getCurve(),
+//                ecp.getG(), ecp.getN(), ecp.getH(),
+//                ecp.getSeed());
+//        BigInteger d = new BigInteger(toByteArray(senderPrivateWIF));
+//        ECPoint q = domainParams.getG().multiply(d);
+//        ECPublicKeyParameters publicParams = new ECPublicKeyParameters(q, domainParams);
+//        byte[] finalPublic = publicParams.getQ().getEncoded();
+//
+//        System.out.println("HERE IT IS: " + toHexString(finalPublic));
+
+        scriptPubKey = OP_DUP + " " + OP_HASH160 + " " + sizeToBase16 + " " + (senderHex.substring(2, senderHex.length() - 8)) + " " + OP_EQUALVERIFY + " " + OP_CHECKSIG;
+        int inputsValueSize = k;
+
 
         String value1 = "Need to sign and verify the transaction -> Skipping...";
         return value1;
     }
+
+
+    private byte[] SHA256hash(byte[] enterKey){
+        return ByteUtil.SHA256hash(enterKey);
+    }
+
+
+    private byte[] RIPEMD160(byte[] enterKey){
+        RIPEMD160Digest digester = new RIPEMD160Digest();
+        byte[] retValue=new byte[digester.getDigestSize()];
+        digester.update(enterKey, 0, enterKey.length);
+        digester.doFinal(retValue, 0);
+        return retValue;
+    }
+
+
+
 }
-
-

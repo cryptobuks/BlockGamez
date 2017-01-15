@@ -1,16 +1,18 @@
+
 import org.junit.jupiter.api.Test;
 
-import javax.xml.bind.DatatypeConverter;
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
+        import javax.xml.bind.DatatypeConverter;
+        import java.io.IOException;
+        import java.security.NoSuchAlgorithmException;
 
-import static org.junit.jupiter.api.Assertions.*;
+        import static org.junit.jupiter.api.Assertions.*;
 
-class SignedTransactionsTest{
+class SignedTransactionsTest {
 
 
     @Test
     public void testSignedTransaction_1() throws NoSuchAlgorithmException, IOException {
+
 
         String recipientAddress = "1KHxSzFpdm337XtBeyfbvbS9LZC1BfDu8K";
         String senderAddress = "1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX";
@@ -20,8 +22,6 @@ class SignedTransactionsTest{
         createTransaction.NewTransaction(recipientAddress, senderAddress, senderprivateKeyWIF);
 //        assertEquals(expectedWIF,actualWif);
     }
-
-
 
 
 }
