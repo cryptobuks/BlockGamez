@@ -6,6 +6,9 @@
     </shared>
   </component>
   <component name="ChangeListManager">
+<<<<<<< HEAD
+    <list default="true" id="4b12a9f9-98fd-4c1e-b49c-3e69cd036afb" name="Default" comment="" />
+=======
     <list default="true" id="4b12a9f9-98fd-4c1e-b49c-3e69cd036afb" name="Default" comment="">
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/src/BitCoinWalletGenerate.java" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/src/EthereumWalletGenerate.java" />
@@ -15,6 +18,7 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/src/ByteUtil.java" afterPath="$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/src/ByteUtil.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/src/Generate.java" afterPath="$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/src/Generate.java" />
     </list>
+>>>>>>> origin/master
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -31,6 +35,7 @@
     <favorites_list name="BlockGamez" />
   </component>
   <component name="FileEditorManager">
+<<<<<<< HEAD
     <splitter split-orientation="horizontal" split-proportion="0.66121113">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
@@ -156,6 +161,112 @@
         </leaf>
       </split-second>
     </splitter>
+=======
+<<<<<<< HEAD
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="450">
+      <file leaf-file-name="SignedTransactions.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/BlockGamez-Solutions/SignedTransactions/src/SignedTransactions.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1870">
+              <caret line="135" column="50" lean-forward="false" selection-start-line="135" selection-start-column="50" selection-end-line="136" selection-end-column="0" />
+              <folding />
+=======
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="Generate.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/src/Generate.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="315">
+              <caret line="169" column="26" lean-forward="false" selection-start-line="169" selection-start-column="15" selection-end-line="169" selection-end-column="26" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Base58.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/src/Base58.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="285">
+              <caret line="19" column="0" lean-forward="false" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+              <folding>
+                <element signature="method#encode#0;class#Base58#0" expanded="false" />
+                <element signature="method#decode#0;class#Base58#0" expanded="false" />
+                <element signature="method#divmod58#0;class#Base58#0" expanded="false" />
+                <element signature="method#divmod256#0;class#Base58#0" expanded="false" />
+                <element signature="method#copyOfRange#0;class#Base58#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ByteUtil.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/src/ByteUtil.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-185">
+              <caret line="15" column="32" lean-forward="false" selection-start-line="15" selection-start-column="15" selection-end-line="15" selection-end-column="32" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+>>>>>>> origin/master
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Generate.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/src/Generate.java">
+          <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+            <state relative-caret-position="1088">
+              <caret line="143" column="70" lean-forward="false" selection-start-line="143" selection-start-column="70" selection-end-line="143" selection-end-column="70" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <marker date="1483839178189" expanded="true" signature="9235:9303" ph="{...}" />
+              </folding>
+=======
+            <state relative-caret-position="1395">
+              <caret line="103" column="30" lean-forward="false" selection-start-line="103" selection-start-column="25" selection-end-line="103" selection-end-column="30" />
+              <folding />
+>>>>>>> origin/master
+            </state>
+          </provider>
+        </entry>
+      </file>
+<<<<<<< HEAD
+      <file leaf-file-name="GenerateTest.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/test/GenerateTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="267">
+              <caret line="21" column="36" lean-forward="true" selection-start-line="21" selection-start-column="36" selection-end-line="21" selection-end-column="36" />
+=======
+      <file leaf-file-name="UnsignedTransact.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/BlockGamez-Solutions/UnsignedTransactions/src/UnsignedTransact.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="180">
+              <caret line="14" column="0" lean-forward="false" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+              <folding>
+                <element signature="e#220#221#0" expanded="false" />
+                <element signature="e#294#295#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="GenerateTest.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/test/GenerateTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="165">
+              <caret line="11" column="20" lean-forward="true" selection-start-line="11" selection-start-column="20" selection-end-line="11" selection-end-column="20" />
+>>>>>>> origin/master
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+>>>>>>> b54657de2a65e17718871045730a7840bca10d91
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -186,21 +297,46 @@
         <option value="$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/test/TestRunner.java" />
         <option value="$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/test/GenerateUnitTest.java" />
         <option value="$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/test/GenerateTest.groovy" />
+<<<<<<< HEAD
+        <option value="$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/test/GenerateTest.java" />
+        <option value="$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/src/Base58.java" />
+        <option value="$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/src/ByteUtil.java" />
+        <option value="$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/src/Generate.java" />
+        <option value="$PROJECT_DIR$/BlockGamez-Solutions/SignedTransactions/src/SignedTransactions.java" />
+=======
         <option value="$PROJECT_DIR$/BlockGamez-Solutions/SignedTransactions/src/SignedTransactions.java" />
         <option value="$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/src/Base58.java" />
         <option value="$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/test/GenerateTest.java" />
+<<<<<<< HEAD
         <option value="$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/src/Generate.java" />
         <option value="$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/src/EthereumWalletGenerate.java" />
         <option value="$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/src/WalletGenerateInterface.java" />
         <option value="$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/src/BitCoinWalletGenerate.java" />
         <option value="$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/src/ByteUtil.java" />
         <option value="$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/test/BitCoinWalletGenerateTest.java" />
+=======
+>>>>>>> origin/master
+>>>>>>> b54657de2a65e17718871045730a7840bca10d91
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
+<<<<<<< HEAD
     <option name="width" value="1440" />
     <option name="height" value="900" />
+=======
+<<<<<<< HEAD
+    <option name="x" value="-258" />
+    <option name="y" value="416" />
+    <option name="width" value="1942" />
+    <option name="height" value="1042" />
+=======
+    <option name="x" value="-1588" />
+    <option name="y" value="-35" />
+    <option name="width" value="1402" />
+    <option name="height" value="877" />
+>>>>>>> origin/master
+>>>>>>> b54657de2a65e17718871045730a7840bca10d91
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -218,8 +354,14 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+<<<<<<< HEAD
       <pane id="Scope" />
       <pane id="Scratches" />
+=======
+      <pane id="PackagesPane" />
+      <pane id="Scratches" />
+      <pane id="Scope" />
+>>>>>>> b54657de2a65e17718871045730a7840bca10d91
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -286,7 +428,10 @@
           </PATH>
         </subPane>
       </pane>
+<<<<<<< HEAD
       <pane id="PackagesPane" />
+=======
+>>>>>>> b54657de2a65e17718871045730a7840bca10d91
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -294,8 +439,12 @@
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit5" />
+<<<<<<< HEAD
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="FullScreen" value="true" />
+=======
+    <property name="last_opened_file_path" value="$USER_HOME$/Downloads/BlockGamez-master/BlockGamez-master/BlockGamez-Solutions/GenerateAddresses" />
+>>>>>>> b54657de2a65e17718871045730a7840bca10d91
   </component>
   <component name="RecentsManager">
     <key name="CreateTestDialog.RecentsKey">
@@ -654,11 +803,26 @@
     </list>
     <recent_temporary>
       <list size="5">
+<<<<<<< HEAD
         <item index="0" class="java.lang.String" itemvalue="JUnit.BitCoinWalletGenerateTest" />
         <item index="1" class="java.lang.String" itemvalue="JUnit.GenerateTest" />
         <item index="2" class="java.lang.String" itemvalue="JUnit.GenerateTest.testPrivateWIFGenerate_1" />
         <item index="3" class="java.lang.String" itemvalue="JUnit.GenerateTest.testPublicWIFGenerate_2" />
         <item index="4" class="java.lang.String" itemvalue="JUnit.GenerateTest.testPublicWIFGenerate_1" />
+=======
+        <item index="0" class="java.lang.String" itemvalue="JUnit.GenerateTest" />
+<<<<<<< HEAD
+        <item index="1" class="java.lang.String" itemvalue="JUnit.GenerateTest.testPrivateWIFGenerate" />
+        <item index="2" class="java.lang.String" itemvalue="Application.Generate" />
+        <item index="3" class="java.lang.String" itemvalue="Application.SignedTransactions" />
+        <item index="4" class="java.lang.String" itemvalue="JUnit.All in GenerateAddresses" />
+=======
+        <item index="1" class="java.lang.String" itemvalue="JUnit.GenerateTest.testPrivateWIFGenerate_1" />
+        <item index="2" class="java.lang.String" itemvalue="JUnit.GenerateTest.testPublicWIFGenerate_2" />
+        <item index="3" class="java.lang.String" itemvalue="JUnit.GenerateTest.testPublicWIFGenerate_1" />
+        <item index="4" class="java.lang.String" itemvalue="JUnit.GenerateTest.testPrivateWIFGenerate" />
+>>>>>>> origin/master
+>>>>>>> b54657de2a65e17718871045730a7840bca10d91
       </list>
     </recent_temporary>
   </component>
@@ -676,8 +840,41 @@
     <servers />
   </component>
   <component name="TestHistory">
+<<<<<<< HEAD
     <history-entry file="BitCoinWalletGenerateTest - 2017.01.15 at 21h 32m 46s.xml">
       <configuration name="BitCoinWalletGenerateTest" configurationId="JUnit" />
+=======
+<<<<<<< HEAD
+    <history-entry file="GenerateTest - 2016.12.30 at 14h 04m 11s.xml">
+      <configuration name="GenerateTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="GenerateTest - 2016.12.30 at 14h 05m 02s.xml">
+      <configuration name="GenerateTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="GenerateTest - 2016.12.30 at 14h 06m 03s.xml">
+      <configuration name="GenerateTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="GenerateTest - 2016.12.30 at 14h 07m 34s.xml">
+      <configuration name="GenerateTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="GenerateTest - 2017.01.07 at 20h 32m 46s.xml">
+      <configuration name="GenerateTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="GenerateTest - 2017.01.07 at 20h 33m 00s.xml">
+      <configuration name="GenerateTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="GenerateTest - 2017.01.07 at 20h 33m 13s.xml">
+      <configuration name="GenerateTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="GenerateTest - 2017.01.08 at 10h 42m 58s.xml">
+      <configuration name="GenerateTest" configurationId="JUnit" />
+=======
+    <history-entry file="GenerateTest - 2016.12.30 at 14h 53m 30s.xml">
+      <configuration name="GenerateTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="GenerateTest - 2016.12.30 at 14h 55m 11s.xml">
+      <configuration name="GenerateTest" configurationId="JUnit" />
+>>>>>>> b54657de2a65e17718871045730a7840bca10d91
     </history-entry>
     <history-entry file="GenerateTest - 2017.01.08 at 09h 43m 40s.xml">
       <configuration name="GenerateTest" configurationId="JUnit" />
@@ -702,32 +899,70 @@
     </history-entry>
     <history-entry file="GenerateTest_testPublicWIFGenerate_2 - 2016.12.30 at 14h 54m 43s.xml">
       <configuration name="GenerateTest.testPublicWIFGenerate_2" configurationId="JUnit" />
+>>>>>>> origin/master
     </history-entry>
     <history-entry file="GenerateTest_testPublicWIFGenerate_2 - 2016.12.30 at 14h 55m 04s.xml">
       <configuration name="GenerateTest.testPublicWIFGenerate_2" configurationId="JUnit" />
     </history-entry>
+    <history-entry file="GenerateTest_testPrivateWIFGenerate - 2017.01.07 at 20h 33m 27s.xml">
+      <configuration name="GenerateTest.testPrivateWIFGenerate" configurationId="JUnit" />
+    </history-entry>
   </component>
   <component name="ToolWindowManager">
+<<<<<<< HEAD
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
+=======
+<<<<<<< HEAD
+    <frame x="-258" y="416" width="1942" height="1042" extended-state="0" />
+=======
+    <frame x="-1588" y="-35" width="1402" height="877" extended-state="0" />
+>>>>>>> origin/master
+>>>>>>> b54657de2a65e17718871045730a7840bca10d91
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+<<<<<<< HEAD
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3270809" sideWeight="0.49928674" order="7" side_tool="false" content_ui="tabs" />
+=======
+<<<<<<< HEAD
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32762557" sideWeight="0.50989586" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32876712" sideWeight="0.3546875" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32876712" sideWeight="0.6453125" order="2" side_tool="false" content_ui="tabs" />
+=======
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3279703" sideWeight="0.49928674" order="7" side_tool="false" content_ui="tabs" />
+>>>>>>> b54657de2a65e17718871045730a7840bca10d91
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32920793" sideWeight="0.36804566" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+<<<<<<< HEAD
       <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3282532" sideWeight="0.6319544" order="2" side_tool="false" content_ui="tabs" />
+=======
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32920793" sideWeight="0.6319544" order="2" side_tool="false" content_ui="tabs" />
+>>>>>>> origin/master
+>>>>>>> b54657de2a65e17718871045730a7840bca10d91
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+<<<<<<< HEAD
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15138888" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31184056" sideWeight="0.4914408" order="1" side_tool="false" content_ui="tabs" />
+=======
+<<<<<<< HEAD
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19583334" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+=======
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2724679" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+>>>>>>> origin/master
+>>>>>>> b54657de2a65e17718871045730a7840bca10d91
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -784,7 +1019,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="8" />
+      <option name="time" value="9" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -793,6 +1028,54 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+    <entry file="file://$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/src/Base58.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="3" column="13" lean-forward="false" selection-start-line="3" selection-start-column="13" selection-end-line="3" selection-end-column="13" />
+          <folding>
+            <element signature="method#encode#0;class#Base58#0" expanded="false" />
+            <element signature="method#decode#0;class#Base58#0" expanded="false" />
+            <element signature="method#divmod58#0;class#Base58#0" expanded="false" />
+            <element signature="method#divmod256#0;class#Base58#0" expanded="false" />
+            <element signature="method#copyOfRange#0;class#Base58#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/BlockGamez-Solutions/SignedTransactions/src/SignedTransactions.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="21" column="46" lean-forward="true" selection-start-line="21" selection-start-column="46" selection-end-line="21" selection-end-column="46" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/BlockGamez-Solutions/UnsignedTransactions/src/UnsignedTransact.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="14" column="0" lean-forward="false" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+          <folding>
+            <element signature="e#220#221#0" expanded="false" />
+            <element signature="e#294#295#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/test/GenerateTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="23" column="0" lean-forward="false" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+>>>>>>> b54657de2a65e17718871045730a7840bca10d91
     <entry file="file://$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/src/Generate.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="765">
@@ -817,11 +1100,17 @@
         </state>
       </provider>
     </entry>
+>>>>>>> origin/master
     <entry file="file://$PROJECT_DIR$/BlockGamez-Solutions/SignedTransactions/src/SignedTransactions.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
+<<<<<<< HEAD
+        </state>
+      </provider>
+    </entry>
+=======
         </state>
       </provider>
     </entry>
@@ -953,32 +1242,29 @@
         </state>
       </provider>
     </entry>
+>>>>>>> origin/master
     <entry file="file://$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/src/Generate.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state relative-caret-position="2448">
+          <caret line="176" column="31" lean-forward="true" selection-start-line="156" selection-start-column="3" selection-end-line="176" selection-end-column="31" />
           <folding>
             <element signature="imports" expanded="true" />
+<<<<<<< HEAD
+            <marker date="1483839178189" expanded="true" signature="9235:9303" ph="{...}" />
+=======
+>>>>>>> origin/master
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/test/GenerateTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="11" column="20" lean-forward="false" selection-start-line="11" selection-start-column="20" selection-end-line="11" selection-end-column="20" />
+        <state relative-caret-position="51">
+          <caret line="9" column="32" lean-forward="true" selection-start-line="9" selection-start-column="32" selection-end-line="9" selection-end-column="32" />
           <folding>
             <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/src/Generate.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
+<<<<<<< HEAD
+=======
           </folding>
         </state>
       </provider>
@@ -1000,20 +1286,32 @@
             <element signature="method#divmod58#0;class#Base58#0" expanded="false" />
             <element signature="method#divmod256#0;class#Base58#0" expanded="false" />
             <element signature="method#copyOfRange#0;class#Base58#0" expanded="false" />
+>>>>>>> origin/master
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/src/Generate.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state relative-caret-position="1088">
+          <caret line="143" column="70" lean-forward="false" selection-start-line="143" selection-start-column="70" selection-end-line="143" selection-end-column="70" />
           <folding>
             <element signature="imports" expanded="true" />
+<<<<<<< HEAD
+            <marker date="1483839178189" expanded="true" signature="9235:9303" ph="{...}" />
+=======
+>>>>>>> origin/master
           </folding>
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
+    <entry file="file://$PROJECT_DIR$/BlockGamez-Solutions/SignedTransactions/src/SignedTransactions.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1870">
+          <caret line="135" column="50" lean-forward="false" selection-start-line="135" selection-start-column="50" selection-end-line="136" selection-end-column="0" />
+          <folding />
+=======
     <entry file="file://$PROJECT_DIR$/BlockGamez-Android/BlockGamezAndroid/app/src/main/main.iml" />
     <entry file="file://$PROJECT_DIR$/BlockGamez-Android/BlockGamezAndroid/app/src/main/AndroidManifest.xml">
       <provider selected="true" editor-type-id="text-editor">
@@ -1194,16 +1492,35 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/src/BitCoinWalletGenerate.java">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="60">
           <caret line="4" column="13" lean-forward="true" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
           <folding />
+=======
+        <state relative-caret-position="315">
+          <caret line="169" column="26" lean-forward="false" selection-start-line="169" selection-start-column="15" selection-end-line="169" selection-end-column="26" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+>>>>>>> origin/master
+>>>>>>> b54657de2a65e17718871045730a7840bca10d91
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/BlockGamez-Solutions/GenerateAddresses/test/GenerateTest.java">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="315">
           <caret line="27" column="0" lean-forward="false" selection-start-line="27" selection-start-column="0" selection-end-line="33" selection-end-column="44" />
+=======
+<<<<<<< HEAD
+        <state relative-caret-position="267">
+          <caret line="21" column="36" lean-forward="true" selection-start-line="21" selection-start-column="36" selection-end-line="21" selection-end-column="36" />
+=======
+        <state relative-caret-position="165">
+          <caret line="11" column="20" lean-forward="true" selection-start-line="11" selection-start-column="20" selection-end-line="11" selection-end-column="20" />
+>>>>>>> origin/master
+>>>>>>> b54657de2a65e17718871045730a7840bca10d91
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1258,7 +1575,7 @@
       </state>
       <state key="JdkListConfigurable.UI">
         <settings>
-          <last-edited>Android API 25 Platform</last-edited>
+          <last-edited>1.8</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
@@ -1270,7 +1587,11 @@
       </state>
       <state key="ModuleStructureConfigurable.UI">
         <settings>
+<<<<<<< HEAD
           <last-edited>test</last-edited>
+=======
+          <last-edited>GenerateAddresses</last-edited>
+>>>>>>> b54657de2a65e17718871045730a7840bca10d91
           <splitter-proportions>
             <option name="proportions">
               <list>
