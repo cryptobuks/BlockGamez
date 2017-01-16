@@ -1,3 +1,5 @@
+import org.bouncycastle.crypto.digests.RIPEMD160Digest;
+
 import javax.xml.bind.DatatypeConverter;
 import java.security.MessageDigest;
 import java.security.MessageDigestSpi;
@@ -41,15 +43,44 @@ public class ByteUtil {
 
     public static byte[] RIPEMD160(byte[] enterKey)
     {
-        try{
-            MessageDigest md = MessageDigest.getInstance("RIPEMD160");
-            md.update(enterKey);
-            return md.digest();
-        } catch (NoSuchAlgorithmException ex)
-        {
-            System.out.println("ERROR: Unable to RIPEMD160 byte array");
-        }
-        byte [] bKey = {(byte) 0x0};
-        return bKey;
+        RIPEMD160Digest digester = new RIPEMD160Digest();
+        byte[] retValue=new byte[digester.getDigestSize()];
+        digester.update(enterKey, 0, enterKey.length);
+        digester.doFinal(retValue, 0);
+        return retValue;
     }
+
+    public static byte[] Add80Byte(byte[] enterKey)
+    {
+        byte[] eightyByte = {(byte)0x80};
+        return concateByteArrays(eightyByte,enterKey);
+    }
+
+    public static byte[] AddNetworkBytes(byte[] enterKey){
+
+        byte[] networkByte = {(byte) 0x0 };
+        return concateByteArrays(networkByte,enterKey);
+    }
+
+    public static byte[] GrabFirstFourBytes(byte[] enterKey){
+
+        byte[] firstFourBytes = new byte[4];
+
+        for(int i = 0; i < firstFourBytes.length; i++){
+            firstFourBytes[i] = enterKey[i];
+        }
+
+        return  firstFourBytes;
+    }
+
+    public static byte[] AddSevenEndOfNetworkByte(byte[] firstFour, byte[] NetworkByteArray)
+    {
+        return concateByteArrays(NetworkByteArray,firstFour);
+    }
+
+    public static byte[] AddChecksumEndOfKey(byte[] key,byte[] checksum)
+    {
+        return concateByteArrays(key,checksum);
+    }
+
 }

@@ -172,22 +172,14 @@ public class Generate {
 
         System.out.println("");
         // First print our generated private key and public key
-        System.out.println("Private key: " + toHexString(privateKeyBytes));
+        System.out.println("Private key: " + ByteUtil.byteArrayToHexString(privateKeyBytes));
         System.out.println("Public key: " + finalPublic);
         System.out.println("");
 
-        /*
-        ECPoint dd = ecp.getG().multiply(privateKey.getD());
-
-        byte[] publickey=new byte[65];
-        System.arraycopy(dd.getY().toBigInteger().toByteArray(), 0, publickey, 64-dd.getY().toBigInteger().toByteArray().length+1, dd.getY().toBigInteger().toByteArray().length);
-        System.arraycopy(dd.getX().toBigInteger().toByteArray(), 0, publickey, 32-dd.getX().toBigInteger().toByteArray().length+1, dd.getX().toBigInteger().toByteArray().length);
-        publickey[0]=4;*/
-
-        byte[] public_Key = toByteArray(finalPublic);
+        byte[] publicKeyBytes = ByteUtil.stringToByteArray(finalPublic);
 
         privateToWif(privateKeyBytes);
-        publicToWif(public_Key);
+        publicToWif(publicKeyBytes);
 
     }
 
