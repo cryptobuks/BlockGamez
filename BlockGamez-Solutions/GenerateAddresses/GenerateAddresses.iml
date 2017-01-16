@@ -26,7 +26,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library" exported="" scope="TEST">
+    <orderEntry type="module-library" scope="TEST">
       <library name="JUnit5">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/../Dependencies/junit-jupiter-api-5.0.0-M3.jar!/" />
