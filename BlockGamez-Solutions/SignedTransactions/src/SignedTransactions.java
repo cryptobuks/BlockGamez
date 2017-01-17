@@ -23,6 +23,7 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Collections;
 
 
 /**
@@ -49,7 +50,6 @@ public class SignedTransactions {
 
         SignedTransactions createTransaction = new SignedTransactions();
         createTransaction.NewTransaction(recipientAddress, senderAddress, senderprivateKeyWIF);
-
 
     } //Creating Tests
 
@@ -79,7 +79,7 @@ public class SignedTransactions {
         BigDecimal finalBalanceBD = null;
         try{
             finalBalanceBD = new BigDecimal(parseUrlInJson("final_balance", sFinalBalance)).divide(SATOSHI_PER_BITCOIN());
-        }
+            }
         catch(IOException e){
             System.out.println("IO EXCEPTION>>>> " + e.toString());
         } finally {
@@ -176,7 +176,7 @@ public class SignedTransactions {
          * We have to use all of the bitcoins from the sender address as the input for the transaction
          * We then subtract the amount and transaction fee and the remaining change goes back to the
          * sender as a second output.
-         */
+          */
         byte[] senderHexByte = Base58.decode(senderAddress);
         byte[] recipientHexByte = Base58.decode(recipientAddress);
         String senderHex = toHex(senderHexByte);
@@ -194,14 +194,14 @@ public class SignedTransactions {
 
         // the amount to transfer, we are leaving out the leading zeros and the 4 byte checksum.
         if(change.compareTo(BigDecimal.ZERO) > 0){
-            // value = amount;
+           // value = amount;
             size = (((recipientHex.substring(2, recipientHex.length() - 8)).length()) / 2);
             sizeToBase16 = size.toString(size, 16);
             scriptPubKey = OP_DUP + " " + OP_HASH160 + " " + sizeToBase16 + " " + (recipientHex.substring(2, recipientHex.length() - 8)) + " " + OP_EQUALVERIFY + " " + OP_CHECKSIG;
             outputs[1] = "value: " + change + "," + scriptPubKey;
         }
 
-        // generatePubPriv("sfsdf");
+       // generatePubPriv("sfsdf");
 //        X9ECParameters ecp = SECNamedCurves.getByName("secp256k1");
 //        ECDomainParameters domainParams = new ECDomainParameters(ecp.getCurve(),
 //                ecp.getG(), ecp.getN(), ecp.getH(),
@@ -217,7 +217,7 @@ public class SignedTransactions {
         int inputsValueSize = k;
 
 
-        /** Not Efficient, please change later due to busy fricken weekend **/
+        /** Not Efficient, please change later**/
         int y = 2;
         int g = 3;
 
@@ -228,9 +228,15 @@ public class SignedTransactions {
             g = g + 5;
         }
 
-        // Create the necessary values for a transaction
-        String[] transaction = {"version: 1", "in_counter:", "inputs: ", "out_counter: ", "outputs: ", "lock_time: ", "hash_code_type: "};
 
+
+        String hashCodeType = "01000000";
+        // Create the necessary values for a transaction
+        String[] transaction = {"version: 1", "in_counter: " + inputsValueSize, "inputs: " + inputs, "out_counter: " + outputs.length, "outputs: " + outputs, "lock_time: 0", "hash_code_type: " + hashCodeType};
+
+        for(int i =0; i< transaction.length; i++){
+            System.out.println(transaction[i]);
+        }
         /** Serialization Starts Here... **/
         serialize_transaction(transaction);
 
@@ -238,11 +244,12 @@ public class SignedTransactions {
         return value1;
     }
 
-    public String little_endian_hex_of_n_bytes(int i, int n){
+    public String little_endian_hex_of_n_bytes(String[] transaction, int n){
 
-        String filler = "";
-
-        return filler;
+        Integer i = Integer.parseInt(transaction[0].substring(transaction[0].lastIndexOf(' ') + 1)); // grab the version number from transaction array (anything after first blank space)
+        String iToBase16 = i.toString(i, 16);
+        String value = "0" + iToBase16 + String.join("", Collections.nCopies(n * 2,"0")); //Also double check this number
+        return value;
     }
 
     public String parse_script(String script){
@@ -252,6 +259,9 @@ public class SignedTransactions {
     }
 
     public String[] serialize_transaction(String[] transaction){
+
+        String tx = little_endian_hex_of_n_bytes(transaction,3); //Double check this number....
+
 
         return transaction;
 
@@ -273,4 +283,3 @@ public class SignedTransactions {
 
 
 }
-
