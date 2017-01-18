@@ -1,4 +1,5 @@
 
+import org.apache.commons.codec.DecoderException;
 import org.junit.jupiter.api.Test;
 
         import javax.xml.bind.DatatypeConverter;
@@ -11,7 +12,7 @@ class SignedTransactionsTest {
 
 
     @Test
-    public void testSignedTransaction_1() throws NoSuchAlgorithmException, IOException {
+    public void testSignedTransaction_1() throws NoSuchAlgorithmException, IOException, DecoderException {
 
 
         String recipientAddress = "1KHxSzFpdm337XtBeyfbvbS9LZC1BfDu8K";

@@ -1,5 +1,6 @@
 
 import com.google.gson.*;
+import org.apache.commons.codec.DecoderException;
 import org.bouncycastle.asn1.sec.SECNamedCurves;
 import org.bouncycastle.asn1.x9.X9ECParameters;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
@@ -12,14 +13,19 @@ import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.math.ec.ECFieldElement;
 import org.bouncycastle.math.ec.ECPoint;
+import org.bouncycastle.util.encoders.Hex;
+import org.bouncycastle.util.encoders.HexEncoder;
 
+import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -42,16 +48,7 @@ public class SignedTransactions {
     BigDecimal change = new BigDecimal("0");
     String[] inputs;
     int k = 0;
-    public static void main(String args[]) throws IOException, NoSuchAlgorithmException {
-
-        String recipientAddress = "1KHxSzFpdm337XtBeyfbvbS9LZC1BfDu8K";
-        String senderAddress = "1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX";
-        String senderprivateKeyWIF = "76a91499bc78ba577a95a11f1a344d4d2ae55f2f857b9888ac";
-
-        SignedTransactions createTransaction = new SignedTransactions();
-        createTransaction.NewTransaction(recipientAddress, senderAddress, senderprivateKeyWIF);
-
-    } //Creating Tests
+    public static void main(String args[]) throws IOException, NoSuchAlgorithmException, DecoderException {} //Creating Tests
 
     //Add the SATOSHI Constant (100,000,000 Satoshi = 1 BTC)
     public BigDecimal SATOSHI_PER_BITCOIN(){
@@ -72,7 +69,7 @@ public class SignedTransactions {
         return grabbedJsonValue;
     }
 
-    public void NewTransaction(String recipientAddress, String senderAddress, String senderPrivateWIF) throws IOException, NoSuchAlgorithmException {
+    public void NewTransaction(String recipientAddress, String senderAddress, String senderPrivateWIF) throws IOException, NoSuchAlgorithmException, DecoderException {
         System.out.println("About to send " + amount + " Bitcoin to address " + recipientAddress + " from address " + senderAddress + " with a transaction fee of: " + transactionFee + "\n");
         /** URLs to blockchain's JSON Values **/
         String sFinalBalance = "https://blockchain.info/address/" + senderAddress + "?format=json"; //just a string
@@ -104,7 +101,7 @@ public class SignedTransactions {
         String sUnspentOutputs = "https://blockchain.info/unspent?active=" + senderAddress + "&format=json";
         String sURL = sUnspentOutputs; //just a string
 
-        System.out.println(sUnspentOutputs);
+       // System.out.println(sUnspentOutputs);
 
         // Connect to the URL using java's native library
         URL url = new URL(sURL);
@@ -165,7 +162,7 @@ public class SignedTransactions {
     }
 
     /** Sign and verify the transaction **/
-    public String SignandVerify(String senderAddress, String recipientAddress, BigDecimal amount, String senderPrivateWIF) throws IOException, NoSuchAlgorithmException {
+    public String SignandVerify(String senderAddress, String recipientAddress, BigDecimal amount, String senderPrivateWIF) throws IOException, NoSuchAlgorithmException, DecoderException {
         /** Payment Scripts: https://en.bitcoin.it/wiki/Script **/
         String OP_DUP = "OP_DUP"; //Duplicates the top stack item.
         String OP_HASH160 = "OP_HASH160"; //The input is hashed twice: first with SHA-256 and then with RIPEMD-160.
@@ -234,21 +231,27 @@ public class SignedTransactions {
         // Create the necessary values for a transaction
         String[] transaction = {"version: 1", "in_counter: " + inputsValueSize, "inputs: " + inputs, "out_counter: " + outputs.length, "outputs: " + outputs, "lock_time: 0", "hash_code_type: " + hashCodeType};
 
-        for(int i =0; i< transaction.length; i++){
-            System.out.println(transaction[i]);
-        }
+//        for(int i =0; i< transaction.length; i++){
+//            System.out.println(transaction[i]);
+//        }
         /** Serialization Starts Here... **/
-        serialize_transaction(transaction);
+        serialize_transaction(transaction, inputsValueSize);
 
         String value1 = "return something lol.";
         return value1;
     }
 
-    public String little_endian_hex_of_n_bytes(String[] transaction, int n){
+    public String little_endian_hex_of_n_bytes(Integer i , int n){ //This one takes interger values
 
-        Integer i = Integer.parseInt(transaction[0].substring(transaction[0].lastIndexOf(' ') + 1)); // grab the version number from transaction array (anything after first blank space)
-        String iToBase16 = i.toString(i, 16);
-        String value = "0" + iToBase16 + String.join("", Collections.nCopies(n * 2,"0")); //Also double check this number
+       // String iToBase16 = i.toString(i, 16);
+        String value = "0" + i+ String.join("", Collections.nCopies(n * 2,"0")); //Also double check this number
+        return value;
+    }
+
+    public String little_endian_hex_of_n_bytes(BigInteger i , int n){ //This one takes BigInteger for :previousTx values
+
+        // String iToBase16 = i.toString(i, 16);
+        String value = "0" + i+ String.join("", Collections.nCopies(n * 2,"0")); //Also double check this number
         return value;
     }
 
@@ -258,11 +261,36 @@ public class SignedTransactions {
 
     }
 
-    public String[] serialize_transaction(String[] transaction){
-
-        String tx = little_endian_hex_of_n_bytes(transaction,3); //Double check this number....
+    public String[] serialize_transaction(String[] transaction, int inputsValueSize) throws UnsupportedEncodingException, DecoderException {
 
 
+        /** Creating the transaction **/
+        String tx = "";
+
+        Integer i = Integer.parseInt(transaction[0].substring(transaction[0].lastIndexOf(' ') + 1)); // grab the version number from transaction array (anything after first blank space)
+        tx = tx + little_endian_hex_of_n_bytes(i,3) + "\n"; //Double check this number....
+
+        i = Integer.parseInt(transaction[1].substring(transaction[1].lastIndexOf(' ') + 1)); // grab the version number from transaction array (anything after first blank space)
+        tx = tx + little_endian_hex_of_n_bytes(i,0) + "\n";
+
+        String[] g = inputs;
+
+        for(int k = 0; k< inputsValueSize; k++){
+
+            if((k == 0) || (k%5) == 0){
+
+                String value = g[k];
+                String newValue = value.substring(13,value.length()-1);
+                BigInteger bi = new BigInteger(newValue, 16);
+                int biLength = newValue.length();
+                tx = tx + little_endian_hex_of_n_bytes(bi, biLength);
+                System.out.println(tx);
+            }
+
+        }
+
+
+      //  System.out.println("TX: " + tx);
         return transaction;
 
     }
@@ -280,6 +308,8 @@ public class SignedTransactions {
         return retValue;
     }
 
-
+    public String toHexx(String arg) throws UnsupportedEncodingException {
+        return String.format("%040x", new BigInteger(1, arg.getBytes("UTF-8")));
+    }
 
 }
