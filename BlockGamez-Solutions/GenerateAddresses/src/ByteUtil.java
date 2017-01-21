@@ -78,6 +78,29 @@ public class ByteUtil {
         return concateByteArrays(NetworkByteArray,firstFour);
     }
 
+    public static byte[] RemoveLastFourBytes(byte[] byteArray){
+        byte[] trimmedByteArray = new byte[byteArray.length-4];
+
+        for(int i=0; i < (byteArray.length-4);i++)
+        {
+            trimmedByteArray[i] = byteArray[i];
+        }
+
+        return trimmedByteArray;
+    }
+
+    public static byte[] RemoveFirstByte(byte[] byteArray){
+        if (byteArray.length > 1) {
+            byte[] trimmedByte = new byte[byteArray.length - 1];
+            for (int i = 1; i < byteArray.length; i++) {
+                trimmedByte[i-1] = byteArray[i];
+            }
+
+            return trimmedByte;
+        }
+        return null;
+    }
+
     public static byte[] AddChecksumEndOfKey(byte[] key,byte[] checksum)
     {
         return concateByteArrays(key,checksum);

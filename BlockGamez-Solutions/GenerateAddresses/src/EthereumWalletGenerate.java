@@ -11,4 +11,14 @@ public class EthereumWalletGenerate implements WalletGenerateInterface {
     public String publicToWif(byte[] publicKey) {
         return null;
     }
+
+    @Override
+    public String WifToPrivate(String privateWIF) {
+        return null;
+    }
+
+    @Override
+    public String WifToPublic(String publicWIF) {
+        return null;
+    }
 }

@@ -2,6 +2,7 @@
  * Created by arjun on 1/14/17.
  */
 public class BitCoinWalletGenerate implements WalletGenerateInterface {
+
     @Override
     public String privateToWif(byte[] privateKey) {
         byte[] newValue80Front = ByteUtil.Add80Byte(privateKey);
@@ -52,5 +53,18 @@ public class BitCoinWalletGenerate implements WalletGenerateInterface {
         String WIF = Base58.encode(AddSeven);
         System.out.println("Bitcoin Address " + WIF);
         return WIF;
+    }
+
+    @Override
+    public String WifToPrivate(String privateWIF) {
+        byte[] privateByte = Base58.decode(privateWIF);
+        byte[] trimmedByte = ByteUtil.RemoveLastFourBytes(privateByte);
+        byte[] privateKey =  ByteUtil.RemoveFirstByte(trimmedByte);
+        return ByteUtil.byteArrayToHexString(privateKey);
+    }
+
+    @Override
+    public String WifToPublic(String publicWIF) {
+        return null;
     }
 }

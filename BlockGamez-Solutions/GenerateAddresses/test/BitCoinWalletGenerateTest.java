@@ -30,4 +30,24 @@ class BitCoinWalletGenerateTest {
         assertEquals(expectedWif,actualWif);
     }
 
+    @Test
+    void WifToPrivate() {
+        String expectedPrivateKey = "0C28FCA386C7A227600B2FE50B7CAE11EC86D3BF1FBE471BE89827E19D72AA1D";
+        String sPrivateWIF = "5HueCGU8rMjxEXxiPuD5BDku4MkFqeZyd4dZ1jvhTVqvbTLvyTJ";
+
+        WalletGenerateInterface bitCoin = new BitCoinWalletGenerate();
+        String actualPrivateKey = bitCoin.WifToPrivate(sPrivateWIF);
+        assertEquals(expectedPrivateKey,actualPrivateKey);
+
+    }
+
+    @Test
+    void WifToPublic(){
+        String expectedPublicKey = "04D0DE0AAEAEFAD02B8BDC8A01A1B8B11C696BD3D66A2C5F10780D95B7DF42645CD85228A6FB29940E858E7E55842AE2BD115D1ED7CC0E82D934E929C97648CB0A";
+        String sPublicWIF = "1GAehh7TsJAHuUAeKZcXf5CnwuGuGgyX2S";
+
+        WalletGenerateInterface bitCoin = new BitCoinWalletGenerate();
+        String actualPrivateKey = bitCoin.WifToPublic(sPublicWIF);
+        assertEquals(expectedPublicKey,actualPrivateKey);
+    }
 }
