@@ -29,7 +29,11 @@ import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -217,9 +221,10 @@ public class SignedTransactions {
         /** Not Efficient, please change later**/
         int y = 2;
         int g = 3;
+        int interfy = Integer.parseInt(sizeToBase16) + 5; //add 1 byte for each script opcode
 
         while(inputsValueSize > y){
-            inputs[y] = "change";
+            inputs[y] = String.valueOf(interfy);
             inputs[g] = scriptPubKey;
             y = y + 5;
             g = g + 5;
@@ -231,9 +236,6 @@ public class SignedTransactions {
         // Create the necessary values for a transaction
         String[] transaction = {"version: 1", "in_counter: " + inputsValueSize, "inputs: " + inputs, "out_counter: " + outputs.length, "outputs: " + outputs, "lock_time: 0", "hash_code_type: " + hashCodeType};
 
-//        for(int i =0; i< transaction.length; i++){
-//            System.out.println(transaction[i]);
-//        }
         /** Serialization Starts Here... **/
         serialize_transaction(transaction, inputsValueSize);
 
@@ -243,16 +245,40 @@ public class SignedTransactions {
 
     public String little_endian_hex_of_n_bytes(Integer i , int n){ //This one takes interger values
 
-       // String iToBase16 = i.toString(i, 16);
+
+      //  String iToBase16 = i.toString(i, 16);
         String value = "0" + i+ String.join("", Collections.nCopies(n * 2,"0")); //Also double check this number
         return value;
     }
 
-    public String little_endian_hex_of_n_bytes(BigInteger i , int n){ //This one takes BigInteger for :previousTx values
+    public String little_endian_hex_of_n_bytes(String i , int n){ //This one takes BigInteger for :previousTx values
 
-        // String iToBase16 = i.toString(i, 16);
-        String value = "0" + i+ String.join("", Collections.nCopies(n * 2,"0")); //Also double check this number
-        return value;
+        String newValue = "";
+        int count = 2;
+        String pairs;
+
+        for(int k = 0; k <= i.length() - 1; k++){
+
+
+            if(count % 2 == 0){
+                pairs = i.substring(k,count);
+                newValue = newValue + pairs + ",";
+
+            }
+            count++;
+        }
+
+        newValue= newValue.substring(0, newValue.length() - 1); //remove last comma
+        String[] myList = newValue.split(",");
+        Collections.reverse(Arrays.asList(myList));
+        newValue = "";
+        for(int k = 0; k<= myList.length - 1; k++){
+
+            newValue = newValue + myList[k];
+        }
+
+        return newValue;
+
     }
 
     public String parse_script(String script){
@@ -274,23 +300,43 @@ public class SignedTransactions {
         tx = tx + little_endian_hex_of_n_bytes(i,0) + "\n";
 
         String[] g = inputs;
-
         for(int k = 0; k< inputsValueSize; k++){
 
-            if((k == 0) || (k%5) == 0){
-
+            System.out.println(g[k]);
+            if(g[k].contains("previousTx:")){
                 String value = g[k];
                 String newValue = value.substring(13,value.length()-1);
-                BigInteger bi = new BigInteger(newValue, 16);
+                //BigInteger bi = new BigInteger(newValue, 16);
                 int biLength = newValue.length();
-                tx = tx + little_endian_hex_of_n_bytes(bi, biLength);
-                System.out.println(tx);
+              //  BigInteger bi2 = BigInteger.valueOf(bi.intValue());
+                tx = tx + little_endian_hex_of_n_bytes(newValue, biLength) + "\n";
+
+
+
+            }
+
+            if(g[k].contains("index:")) {
+                i = Integer.parseInt(transaction[3].substring(transaction[3].lastIndexOf(' ') + 1)); // grab the version number from transaction array (anything after first blank space)
+               tx = tx + little_endian_hex_of_n_bytes(i,0) + "\n";
+            }
+
+            if(g[k].contains("scriptLength:")){
+
+            }
+
+            if(g[k].contains("scriptSig:")){
+
+            }
+
+            if(g[k].contains("sequence_no:")){
+
             }
 
         }
 
 
-      //  System.out.println("TX: " + tx);
+
+        System.out.println("TX: " + tx);
         return transaction;
 
     }
@@ -308,8 +354,5 @@ public class SignedTransactions {
         return retValue;
     }
 
-    public String toHexx(String arg) throws UnsupportedEncodingException {
-        return String.format("%040x", new BigInteger(1, arg.getBytes("UTF-8")));
-    }
 
 }

@@ -1,0 +1,16 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="GenerateAddresses:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/GenerateAddresses_jar</output-path>
+    <root id="archive" name="GenerateAddresses.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="GenerateAddresses" />
+      <element id="module-test-output" name="GenerateAddresses" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Dependencies/bcprov-ext-jdk15on-155.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Dependencies/junit-4.12.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Dependencies/junit-jupiter-api-5.0.0-M3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Dependencies/opentest4j-1.0.0-M1.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
