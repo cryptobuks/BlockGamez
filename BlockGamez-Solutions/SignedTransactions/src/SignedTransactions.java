@@ -52,18 +52,8 @@ public class SignedTransactions {
     BigDecimal change = new BigDecimal("0");
     String[] inputs;
     int k = 0;
-    public static void main(String args[]) throws IOException, NoSuchAlgorithmException, DecoderException {
-
-
-        String recipientAddress = "1KHxSzFpdm337XtBeyfbvbS9LZC1BfDu8K";
-        String senderAddress = "1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX";
-        String senderprivateKeyWIF = "76a91499bc78ba577a95a11f1a344d4d2ae55f2f857b9888ac";
-
-        SignedTransactions createTransaction = new SignedTransactions();
-        createTransaction.NewTransaction(recipientAddress, senderAddress, senderprivateKeyWIF);
-
-
-    } //Creating Tests
+    
+    public static void main(String args[]) throws IOException, NoSuchAlgorithmException, DecoderException {} //Creating Tests
 
     //Add the SATOSHI Constant (100,000,000 Satoshi = 1 BTC)
     public BigDecimal SATOSHI_PER_BITCOIN(){
@@ -112,11 +102,8 @@ public class SignedTransactions {
 
     /** # Need to check wallet if there is a result of one or more incoming payments. **/
     public String[] UnspentTransactions( BigDecimal transactionFee, String senderAddress) throws IOException {  //BigDecimal jsonGrabbedUnspentOutputs,
-        String[] holdValues = new String[1000];
         String sUnspentOutputs = "https://blockchain.info/unspent?active=" + senderAddress + "&format=json";
         String sURL = sUnspentOutputs; //just a string
-
-       // System.out.println(sUnspentOutputs);
 
         // Connect to the URL using java's native library
         URL url = new URL(sURL);
@@ -167,15 +154,6 @@ public class SignedTransactions {
         return sb.toString();
     }
 
-    public static String toHexString(byte[] array){
-        return ByteUtil.byteArrayToHexString(array);
-    }
-
-    public static byte[] toByteArray(String byteString)
-    {
-        return ByteUtil.stringToByteArray(byteString);
-    }
-
     /** Sign and verify the transaction **/
     public String SignandVerify(String senderAddress, String recipientAddress, BigDecimal amount, String senderPrivateWIF) throws IOException, NoSuchAlgorithmException, DecoderException {
         /** Payment Scripts: https://en.bitcoin.it/wiki/Script **/
@@ -197,12 +175,10 @@ public class SignedTransactions {
         String sizeToBase16, scriptPubKey;
         String[] outputs = new String[2];
 
-
         size = (((senderHex.substring(2, senderHex.length() - 8)).length()) / 2);
         sizeToBase16 = size.toString(size, 16);
         scriptPubKey = OP_DUP + " " + OP_HASH160 + " " + sizeToBase16 + " " + (senderHex.substring(2, senderHex.length() - 8)) + " " + OP_EQUALVERIFY + " " + OP_CHECKSIG;
         outputs[0] = "value: " + amount + "," + scriptPubKey;
-
 
         // the amount to transfer, we are leaving out the leading zeros and the 4 byte checksum.
         if(change.compareTo(BigDecimal.ZERO) > 0){
@@ -213,26 +189,12 @@ public class SignedTransactions {
             outputs[1] = "value: " + change + "," + scriptPubKey;
         }
 
-       // generatePubPriv("sfsdf");
-//        X9ECParameters ecp = SECNamedCurves.getByName("secp256k1");
-//        ECDomainParameters domainParams = new ECDomainParameters(ecp.getCurve(),
-//                ecp.getG(), ecp.getN(), ecp.getH(),
-//                ecp.getSeed());
-//        BigInteger d = new BigInteger(toByteArray(senderPrivateWIF));
-//        ECPoint q = domainParams.getG().multiply(d);
-//        ECPublicKeyParameters publicParams = new ECPublicKeyParameters(q, domainParams);
-//        byte[] finalPublic = publicParams.getQ().getEncoded();
-//
-//        System.out.println("HERE IT IS: " + toHexString(finalPublic));
-
         scriptPubKey = OP_DUP + " " + OP_HASH160 + " " + sizeToBase16 + " " + (senderHex.substring(2, senderHex.length() - 8)) + " " + OP_EQUALVERIFY + " " + OP_CHECKSIG;
         int inputsValueSize = k;
-
 
         /** Not Efficient, please change later**/
         int y = 2;
         int g = 3;
-
         int scriptLength = ((senderHex.substring(2, senderHex.length() - 8)).length() / 2) + 5;
 
         while(inputsValueSize > y){
@@ -242,27 +204,20 @@ public class SignedTransactions {
             g = g + 5;
         }
 
-
         String hashCodeType = "01000000";
         // Create the necessary values for a transaction
         String[] transaction = {"version: 1", "in_counter: " + inputsValueSize, "inputs: " + inputs, "out_counter: " + outputs.length, "outputs: " + outputs, "lock_time: 0", "hash_code_type: " + hashCodeType};
 
         /** Serialization Starts Here... **/
         serialize_transaction(transaction, inputsValueSize);
-
         String value1 = "return something lol.";
         return value1;
     }
 
     public String little_endian_hex_of_n_bytes(Integer i , int n){ //This one takes interger values
 
-
         String iToBase16 = i.toString(i, 16);
-     //   System.out.println(i);
-
         String value = "0" + iToBase16+ String.join("", Collections.nCopies(n * 2,"0")); //Also double check this number
-          // System.out.println(value);
-
         return value;
     }
 
@@ -273,12 +228,9 @@ public class SignedTransactions {
         String pairs;
 
         for(int k = 0; k <= i.length() - 1; k++){
-
-
             if(count % 2 == 0){
                 pairs = i.substring(k,count);
                 newValue = newValue + pairs + ",";
-
             }
             count++;
         }
@@ -288,36 +240,26 @@ public class SignedTransactions {
         Collections.reverse(Arrays.asList(myList));
         newValue = "";
         for(int k = 0; k<= myList.length - 1; k++){
-
             newValue = newValue + myList[k];
         }
-
         return newValue;
-
     }
 
     public String parse_script(String script){
-
         return script;
-
     }
 
     public String[] serialize_transaction(String[] transaction, int inputsValueSize) throws UnsupportedEncodingException, DecoderException {
 
-
         /** Creating the transaction **/
         String tx = "";
-
         Integer i = Integer.parseInt(transaction[0].substring(transaction[0].lastIndexOf(' ') + 1)); // grab the version number from transaction array (anything after first blank space)
         tx = tx + little_endian_hex_of_n_bytes(i,3) + "\n"; //Double check this number....
-
         i = Integer.parseInt(transaction[1].substring(transaction[1].lastIndexOf(' ') + 1)); // grab the version number from transaction array (anything after first blank space)
         tx = tx + little_endian_hex_of_n_bytes(i,0) + "\n";
 
         String[] g = inputs;
         for(int k = 0; k< inputsValueSize; k++){
-
-          //  System.out.println(g[k]);
             if(g[k].contains("previousTx:")){
                 String value = g[k];
                 String newValue = value.substring(13,value.length()-1);
@@ -329,18 +271,15 @@ public class SignedTransactions {
 
 
             }
-
             if(g[k].contains("index:")) {
                 i = Integer.parseInt(inputs[1].substring(inputs[1].lastIndexOf(' ') + 1)); // grab the version number from transaction array (anything after first blank space)
                 tx = tx + little_endian_hex_of_n_bytes(i,4) + "\n";
             }
-
             if(g[k].contains("scriptLength:")){
 
                 i = Integer.parseInt(inputs[2].substring(inputs[2].lastIndexOf(' ') + 1)); // grab the version number from transaction array (anything after first blank space)
                 tx = tx + little_endian_hex_of_n_bytes(i,0) + "\n";
             }
-
             if(g[k].contains("scriptSig:")){
                 String[] HexRep = g[k].split(" ");
                 if(HexRep[1].equalsIgnoreCase("OP_DUP")){
@@ -355,30 +294,20 @@ public class SignedTransactions {
                 if(HexRep[HexRep.length - 2].equalsIgnoreCase("OP_EQUALVERIFY")){
                     HexRep[HexRep.length - 2] = "88"; //Hex representation of "OP_EQUALVERIFY
                 }
-
                 String newValue = "";
                 for(int x = 1; x <= HexRep.length - 1; x++){ //x = 1, we don't need the definition
                     newValue = newValue + HexRep[x] + " ";
                 }
-
                 tx = tx + newValue + "\n";
-
             }
 
             if(g[k].contains("sequence_no:")){
                 String[] HexRep = g[k].split(" ");
-
                 tx = tx + HexRep[1] + "\n";
-
             }
-
         }
-
-
-
         System.out.println("TX: " + tx);
         return transaction;
-
     }
 
     private byte[] SHA256hash(byte[] enterKey){
