@@ -1,39 +1,18 @@
 
 import com.google.gson.*;
 import org.apache.commons.codec.DecoderException;
-import org.bouncycastle.asn1.sec.SECNamedCurves;
-import org.bouncycastle.asn1.x9.X9ECParameters;
-import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.digests.RIPEMD160Digest;
-import org.bouncycastle.crypto.digests.SHA256Digest;
-import org.bouncycastle.crypto.generators.ECKeyPairGenerator;
-import org.bouncycastle.crypto.params.ECDomainParameters;
-import org.bouncycastle.crypto.params.ECKeyGenerationParameters;
-import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
-import org.bouncycastle.crypto.params.ECPublicKeyParameters;
-import org.bouncycastle.math.ec.ECFieldElement;
-import org.bouncycastle.math.ec.ECPoint;
-import org.bouncycastle.util.encoders.Hex;
-import org.bouncycastle.util.encoders.HexEncoder;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.Charset;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 /**
@@ -210,8 +189,7 @@ public class SignedTransactions {
         String[] transaction = {"version: 1", "in_counter: " + inputsValueSize, "inputs: " + inputs, "out_counter: " + outputs.length, "outputs: " + outputs, "lock_time: 0", "hash_code_type: " + hashCodeType};
 
         /** Serialization Starts Here... **/
-        serialize_transaction(transaction, inputsValueSize, outputs);
-        String value1 = "return something lol.";
+        String value1 = serialize_transaction(transaction, inputsValueSize, outputs);
         return value1;
     }
 
@@ -246,11 +224,9 @@ public class SignedTransactions {
         return newValue;
     }
 
-    public String parse_script(String script){
-        return script;
-    }
 
-    public String[] serialize_transaction(String[] transaction, int inputsValueSize, String[] outputs) throws UnsupportedEncodingException, DecoderException {
+
+    public String serialize_transaction(String[] transaction, int inputsValueSize, String[] outputs) throws UnsupportedEncodingException, DecoderException {
 
         /** Creating the transaction **/
         String tx = "";
@@ -307,7 +283,7 @@ public class SignedTransactions {
 
         i = Integer.parseInt(transaction[3].substring(transaction[3].lastIndexOf(' ') + 1)); // grab the version number from transaction array (anything after first blank space)
         tx = tx + little_endian_hex_of_n_bytes(i,0) + "\n";
-
+        String unparsed_script;
         for(int x = 0; x <= outputs.length - 1; x++){
 
             /** Really inefficient... my apologies, but works for now **/
@@ -322,14 +298,59 @@ public class SignedTransactions {
 
             if(outputs[x].contains("scriptPubKey: ")){
                 String[] HexRep = outputs[x].split(",");
-                String unparsed_script = HexRep[1];
-                String sub = unparsed_script.substring(14, unparsed_script.length() - 1);
+                unparsed_script = HexRep[1];
+                String sub = unparsed_script.substring(14, unparsed_script.length());
                 unparsed_script = sub;
+
+                parse_script(unparsed_script);
+
+                int length = parse_script(unparsed_script).length()/2;
+                tx = tx + length + "\n";
+                tx = tx + parse_script(unparsed_script) + "\n";
                 // Parse script commands into the appropriate hex codes:
             }
         }
-       // System.out.println("TX: " + tx);
-        return transaction;
+        i = Integer.parseInt(transaction[5].substring(transaction[5].lastIndexOf(' ') + 1)); // grab the version number from transaction array (anything after first blank space)
+        String s = little_endian_hex_of_n_bytes(i,3);
+
+        tx = tx + s + "\n";
+
+        i = Integer.parseInt(transaction[6].substring(transaction[6].lastIndexOf(' ') + 1)); // grab the version number from transaction array (anything after first blank space)
+        s = "0" + i.toString();
+        tx = tx + s;
+
+        return tx;
+
+    }
+
+    public String parse_script(String script){
+
+        String[] split = script.split(" ");
+        String newValue = "";
+        for(int k = 0; k <= split.length -1; k++){
+
+            if(split[0].equalsIgnoreCase("OP_DUP")){
+                split[0] = "76"; // Hex representation of OP_DUP script
+            }
+            if(split[1].equalsIgnoreCase("OP_HASH160")){
+                split[1] = "a9"; // Hex representaion of OP_HASH160
+            }
+            if(split[split.length - 1].equalsIgnoreCase("OP_CHECKSIG")){
+                split[split.length - 1] = "ac"; //Hex representation of "OP_CHECKSIG
+            }
+            if(split[split.length - 2].equalsIgnoreCase("OP_EQUALVERIFY")){
+                split[split.length - 2] = "88"; //Hex representation of "OP_EQUALVERIFY
+            }
+
+            newValue = newValue + split[k];
+
+
+        }
+
+
+
+
+        return newValue;
     }
 
     private byte[] SHA256hash(byte[] enterKey){
