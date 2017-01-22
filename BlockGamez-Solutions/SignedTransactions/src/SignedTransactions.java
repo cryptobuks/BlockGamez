@@ -52,7 +52,6 @@ public class SignedTransactions {
     BigDecimal change = new BigDecimal("0");
     String[] inputs;
     int k = 0;
-    
     public static void main(String args[]) throws IOException, NoSuchAlgorithmException, DecoderException {} //Creating Tests
 
     //Add the SATOSHI Constant (100,000,000 Satoshi = 1 BTC)
@@ -102,6 +101,7 @@ public class SignedTransactions {
 
     /** # Need to check wallet if there is a result of one or more incoming payments. **/
     public String[] UnspentTransactions( BigDecimal transactionFee, String senderAddress) throws IOException {  //BigDecimal jsonGrabbedUnspentOutputs,
+        String[] holdValues = new String[1000];
         String sUnspentOutputs = "https://blockchain.info/unspent?active=" + senderAddress + "&format=json";
         String sURL = sUnspentOutputs; //just a string
 
@@ -178,7 +178,7 @@ public class SignedTransactions {
         size = (((senderHex.substring(2, senderHex.length() - 8)).length()) / 2);
         sizeToBase16 = size.toString(size, 16);
         scriptPubKey = OP_DUP + " " + OP_HASH160 + " " + sizeToBase16 + " " + (senderHex.substring(2, senderHex.length() - 8)) + " " + OP_EQUALVERIFY + " " + OP_CHECKSIG;
-        outputs[0] = "value: " + amount + "," + scriptPubKey;
+        outputs[0] = "value: " + amount + "," + "scriptPubKey: " + scriptPubKey;
 
         // the amount to transfer, we are leaving out the leading zeros and the 4 byte checksum.
         if(change.compareTo(BigDecimal.ZERO) > 0){
@@ -186,7 +186,8 @@ public class SignedTransactions {
             size = (((recipientHex.substring(2, recipientHex.length() - 8)).length()) / 2);
             sizeToBase16 = size.toString(size, 16);
             scriptPubKey = OP_DUP + " " + OP_HASH160 + " " + sizeToBase16 + " " + (recipientHex.substring(2, recipientHex.length() - 8)) + " " + OP_EQUALVERIFY + " " + OP_CHECKSIG;
-            outputs[1] = "value: " + change + "," + scriptPubKey;
+            outputs[1] = "value: " + change + "," + "scriptPubKey: " + scriptPubKey;
+
         }
 
         scriptPubKey = OP_DUP + " " + OP_HASH160 + " " + sizeToBase16 + " " + (senderHex.substring(2, senderHex.length() - 8)) + " " + OP_EQUALVERIFY + " " + OP_CHECKSIG;
@@ -209,7 +210,7 @@ public class SignedTransactions {
         String[] transaction = {"version: 1", "in_counter: " + inputsValueSize, "inputs: " + inputs, "out_counter: " + outputs.length, "outputs: " + outputs, "lock_time: 0", "hash_code_type: " + hashCodeType};
 
         /** Serialization Starts Here... **/
-        serialize_transaction(transaction, inputsValueSize);
+        serialize_transaction(transaction, inputsValueSize, outputs);
         String value1 = "return something lol.";
         return value1;
     }
@@ -249,7 +250,7 @@ public class SignedTransactions {
         return script;
     }
 
-    public String[] serialize_transaction(String[] transaction, int inputsValueSize) throws UnsupportedEncodingException, DecoderException {
+    public String[] serialize_transaction(String[] transaction, int inputsValueSize, String[] outputs) throws UnsupportedEncodingException, DecoderException {
 
         /** Creating the transaction **/
         String tx = "";
@@ -267,9 +268,6 @@ public class SignedTransactions {
                 int biLength = newValue.length();
               //  BigInteger bi2 = BigInteger.valueOf(bi.intValue());
                 tx = tx + little_endian_hex_of_n_bytes(newValue, biLength) + "\n";
-
-
-
             }
             if(g[k].contains("index:")) {
                 i = Integer.parseInt(inputs[1].substring(inputs[1].lastIndexOf(' ') + 1)); // grab the version number from transaction array (anything after first blank space)
@@ -306,14 +304,37 @@ public class SignedTransactions {
                 tx = tx + HexRep[1] + "\n";
             }
         }
-        System.out.println("TX: " + tx);
+
+        i = Integer.parseInt(transaction[3].substring(transaction[3].lastIndexOf(' ') + 1)); // grab the version number from transaction array (anything after first blank space)
+        tx = tx + little_endian_hex_of_n_bytes(i,0) + "\n";
+
+        for(int x = 0; x <= outputs.length - 1; x++){
+
+            /** Really inefficient... my apologies, but works for now **/
+            if(outputs[x].contains("value: ")){
+                String[] HexRep = outputs[x].split(",");
+                String value = HexRep[0];
+                String sub = value.substring(8,value.length()-1);
+                BigDecimal bigInt = new BigDecimal(sub);
+                BigDecimal finalValue = bigInt.multiply(SATOSHI_PER_BITCOIN());
+                tx = tx + finalValue + "\n";
+            }
+
+            if(outputs[x].contains("scriptPubKey: ")){
+                String[] HexRep = outputs[x].split(",");
+                String unparsed_script = HexRep[1];
+                String sub = unparsed_script.substring(14, unparsed_script.length() - 1);
+                unparsed_script = sub;
+                // Parse script commands into the appropriate hex codes:
+            }
+        }
+       // System.out.println("TX: " + tx);
         return transaction;
     }
 
     private byte[] SHA256hash(byte[] enterKey){
         return ByteUtil.SHA256hash(enterKey);
     }
-
 
     private byte[] RIPEMD160(byte[] enterKey){
         RIPEMD160Digest digester = new RIPEMD160Digest();
