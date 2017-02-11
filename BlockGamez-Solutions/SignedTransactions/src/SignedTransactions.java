@@ -276,12 +276,13 @@ public class SignedTransactions {
             }
             if(g[k].contains("index:")) {
                 i = Integer.parseInt(inputs[1].substring(inputs[1].lastIndexOf(' ') + 1)); // grab the version number from transaction array (anything after first blank space)
-                tx = tx + little_endian_hex_of_n_bytes(i,4) + "\n";
+                tx = tx + little_endian_hex_of_n_bytes(i,3) + "\n";
             }
             if(g[k].contains("scriptLength:")){
 
                 i = Integer.parseInt(inputs[2].substring(inputs[2].lastIndexOf(' ') + 1)); // grab the version number from transaction array (anything after first blank space)
-                tx = tx + little_endian_hex_of_n_bytes(i,0) + "\n";
+                String remZero = little_endian_hex_of_n_bytes(i,0).substring((1));
+                tx = tx + remZero + "\n";
             }
             if(g[k].contains("scriptSig:")){
                 String[] HexRep = g[k].split(" ");
@@ -321,10 +322,51 @@ public class SignedTransactions {
             if(outputs[x].contains("value: ")){
                 String[] HexRep = outputs[x].split(",");
                 String value = HexRep[0];
-                String sub = value.substring(8,value.length()-1);
+
+
+                String sub = value.substring(8,value.length());
                 BigDecimal bigInt = new BigDecimal(sub);
+
+
+
                 BigDecimal finalValue = bigInt.multiply(SATOSHI_PER_BITCOIN());
-                tx = tx + finalValue + "\n";
+
+                Integer intValue = finalValue.intValueExact();
+
+
+                String j = (little_endian_hex_of_n_bytes(intValue,0) + "\n");
+
+                if(j.length() % 2 != 0){
+                    j = j + "0";
+                }
+                int count = 2;
+                String newValue = "";
+                String pairs;
+
+
+                for(int k = 0; k <= j.length() - 1; k++){
+                    if(count % 2 == 0){
+                        pairs =j.substring(k,count);
+                        newValue = newValue + pairs + ",";
+                    }
+                    count++;
+                }
+
+                newValue= newValue.substring(0, newValue.length() - 1); //remove last comma
+                String[] myList = newValue.split(",");
+                Collections.reverse(Arrays.asList(myList));
+                newValue = "";
+                String val = "";
+                for(int k = 0; k<= myList.length - 1; k++){
+                    newValue = newValue + myList[k];
+                }
+                    newValue = newValue.substring(2);
+
+                if(newValue.length() != 16){
+                    int redo = 16 - newValue.length();
+                    val = newValue + String.join("", Collections.nCopies(redo,"0"));
+                }
+                    tx = tx + val + "\n";
             }
 
             if(outputs[x].contains("scriptPubKey: ")){
@@ -336,8 +378,10 @@ public class SignedTransactions {
                 parse_script(unparsed_script);
 
                 int length = parse_script(unparsed_script).length()/2;
-                tx = tx + length + "\n";
-                System.out.println("weinus " + length);
+
+                String remZero = little_endian_hex_of_n_bytes(length,0).substring(1);
+                tx = tx + remZero + "\n";
+
                 tx = tx + parse_script(unparsed_script) + "\n";
                 // Parse script commands into the appropriate hex codes:
             }
