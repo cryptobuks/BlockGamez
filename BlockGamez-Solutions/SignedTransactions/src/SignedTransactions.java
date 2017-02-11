@@ -1,6 +1,5 @@
 
 import com.google.gson.*;
-import org.apache.commons.codec.DecoderException;
 import org.bouncycastle.crypto.digests.RIPEMD160Digest;
 
 import java.io.IOException;
@@ -26,12 +25,21 @@ public class SignedTransactions {
      * amount -> The amount of Bitcoin being sent (BigDecimal format, no floats for money).
      * transactionFee -> the fee for doing the job (BigDecimal)
      */
-    BigDecimal amount = new BigDecimal("0.01");
-    BigDecimal transactionFee = new BigDecimal("0.0005");
+    BigDecimal amount = new BigDecimal("0.00001");
+    BigDecimal transactionFee = new BigDecimal("0.00005");
     BigDecimal change = new BigDecimal("0");
-    String[] inputs;
+    String[] inputs; Integer constantInSize;
     int k = 0;
-    public static void main(String args[]) throws IOException, NoSuchAlgorithmException, DecoderException {} //Creating Tests
+    public static void main(String args[]) throws IOException, NoSuchAlgorithmException {
+
+        String recipientAddress = "1NyiaZHZyBb9qcbwgawsvY9cuPZ43YemAq";
+        String senderAddress = "1AirSwwa8UBKYcjbEEB9ZmgfsFaWwRU4N7";
+
+        String senderprivateKeyWIF = "5JbQUwpTA2AHpxrKB7p86Vn6GrvM56Bt4wgJfpJU4kfwfXqMwYB";
+
+        SignedTransactions createTransaction = new SignedTransactions();
+        createTransaction.NewTransaction(recipientAddress, senderAddress, senderprivateKeyWIF);
+    } //Creating Tests
 
     //Add the SATOSHI Constant (100,000,000 Satoshi = 1 BTC)
     public BigDecimal SATOSHI_PER_BITCOIN(){
@@ -52,14 +60,14 @@ public class SignedTransactions {
         return grabbedJsonValue;
     }
 
-    public void NewTransaction(String recipientAddress, String senderAddress, String senderPrivateWIF) throws IOException, NoSuchAlgorithmException, DecoderException {
+    public void NewTransaction(String recipientAddress, String senderAddress, String senderPrivateWIF) throws IOException, NoSuchAlgorithmException {
         System.out.println("About to send " + amount + " Bitcoin to address " + recipientAddress + " from address " + senderAddress + " with a transaction fee of: " + transactionFee + "\n");
         /** URLs to blockchain's JSON Values **/
         String sFinalBalance = "https://blockchain.info/address/" + senderAddress + "?format=json"; //just a string
         BigDecimal finalBalanceBD = null;
         try{
             finalBalanceBD = new BigDecimal(parseUrlInJson("final_balance", sFinalBalance)).divide(SATOSHI_PER_BITCOIN());
-            }
+        }
         catch(IOException e){
             System.out.println("IO EXCEPTION>>>> " + e.toString());
         } finally {
@@ -96,7 +104,8 @@ public class SignedTransactions {
         JsonObject rootobj = root.getAsJsonObject();
         JsonArray unspentoutputs = rootobj.get("unspent_outputs").getAsJsonArray();
         Integer sizeOfUnspentOutputs = unspentoutputs.size();
-        inputs = new String[sizeOfUnspentOutputs]; // create string array to hold all values of unspent outputs
+        constantInSize = sizeOfUnspentOutputs;
+        inputs = new String[5]; // create string array to hold all values of unspent outputs
         BigDecimal input_total = new BigDecimal("0");
 
         for(int i = 0; i <= sizeOfUnspentOutputs - 1; i++){
@@ -109,8 +118,8 @@ public class SignedTransactions {
             String scriptSig = null; inputs[k+3] = "scriptSig: " + scriptSig; //make this blank, will sign later
             String sequenceNO = "ffffffff"; inputs[k+4] = "sequence_no: " + sequenceNO;
             k = k + 5; //This needs to count by 5, to properly set all previous transactions at the correct index, 5 => 5 values needed for indexing during each iteration.
-            amount = new BigDecimal(value.toString()).divide(SATOSHI_PER_BITCOIN());
-            input_total = input_total.add(amount);
+            BigDecimal otheramount = new BigDecimal(value.toString()).divide(SATOSHI_PER_BITCOIN());
+            input_total = input_total.add(otheramount);
             if((input_total.compareTo(amount.add(transactionFee)) == 0) || (input_total.compareTo(amount.add(transactionFee))) == 1){
                 break;
             }
@@ -134,7 +143,7 @@ public class SignedTransactions {
     }
 
     /** Sign and verify the transaction **/
-    public String SignandVerify(String senderAddress, String recipientAddress, BigDecimal amount, String senderPrivateWIF) throws IOException, NoSuchAlgorithmException, DecoderException {
+    public String SignandVerify(String senderAddress, String recipientAddress, BigDecimal amount, String senderPrivateWIF) throws IOException, NoSuchAlgorithmException {
         /** Payment Scripts: https://en.bitcoin.it/wiki/Script **/
         String OP_DUP = "OP_DUP"; //Duplicates the top stack item.
         String OP_HASH160 = "OP_HASH160"; //The input is hashed twice: first with SHA-256 and then with RIPEMD-160.
@@ -145,7 +154,7 @@ public class SignedTransactions {
          * We have to use all of the bitcoins from the sender address as the input for the transaction
          * We then subtract the amount and transaction fee and the remaining change goes back to the
          * sender as a second output.
-          */
+         */
         byte[] senderHexByte = Base58.decode(senderAddress);
         byte[] recipientHexByte = Base58.decode(recipientAddress);
         String senderHex = toHex(senderHexByte);
@@ -161,7 +170,7 @@ public class SignedTransactions {
 
         // the amount to transfer, we are leaving out the leading zeros and the 4 byte checksum.
         if(change.compareTo(BigDecimal.ZERO) > 0){
-           // value = amount;
+            // value = amount;
             size = (((recipientHex.substring(2, recipientHex.length() - 8)).length()) / 2);
             sizeToBase16 = size.toString(size, 16);
             scriptPubKey = OP_DUP + " " + OP_HASH160 + " " + sizeToBase16 + " " + (recipientHex.substring(2, recipientHex.length() - 8)) + " " + OP_EQUALVERIFY + " " + OP_CHECKSIG;
@@ -186,7 +195,7 @@ public class SignedTransactions {
 
         String hashCodeType = "01000000";
         // Create the necessary values for a transaction
-        String[] transaction = {"version: 1", "in_counter: " + inputsValueSize, "inputs: " + inputs, "out_counter: " + outputs.length, "outputs: " + outputs, "lock_time: 0", "hash_code_type: " + hashCodeType};
+        String[] transaction = {"version: 1", "in_counter: " + constantInSize, "inputs: " + inputs, "out_counter: " + outputs.length, "outputs: " + outputs, "lock_time: 0", "hash_code_type: " + hashCodeType};
 
         /** Serialization Starts Here... **/
         String value1 = serialize_transaction(transaction, inputsValueSize, outputs);
@@ -196,6 +205,24 @@ public class SignedTransactions {
     public String little_endian_hex_of_n_bytes(Integer i , int n){ //This one takes interger values
 
         String iToBase16 = i.toString(i, 16);
+//        if(iToBase16.equals("a")){
+//            iToBase16 = "10";
+//        }
+//        if(iToBase16.equals("b")){
+//            iToBase16 = "11";
+//        }
+//        if(iToBase16.equals("c")){
+//            iToBase16 = "12";
+//        }
+//        if(iToBase16.equals("d")){
+//            iToBase16 = "13";
+//        }
+//        if(iToBase16.equals("e")){
+//            iToBase16 = "14";
+//        }
+//        if(iToBase16.equals("f")){
+//            iToBase16 = "15";
+//        }
         String value = "0" + iToBase16+ String.join("", Collections.nCopies(n * 2,"0")); //Also double check this number
         return value;
     }
@@ -226,13 +253,15 @@ public class SignedTransactions {
 
 
 
-    public String serialize_transaction(String[] transaction, int inputsValueSize, String[] outputs) throws UnsupportedEncodingException, DecoderException {
+    public String serialize_transaction(String[] transaction, int inputsValueSize, String[] outputs) throws UnsupportedEncodingException {
 
         /** Creating the transaction **/
         String tx = "";
         Integer i = Integer.parseInt(transaction[0].substring(transaction[0].lastIndexOf(' ') + 1)); // grab the version number from transaction array (anything after first blank space)
         tx = tx + little_endian_hex_of_n_bytes(i,3) + "\n"; //Double check this number....
         i = Integer.parseInt(transaction[1].substring(transaction[1].lastIndexOf(' ') + 1)); // grab the version number from transaction array (anything after first blank space)
+
+
         tx = tx + little_endian_hex_of_n_bytes(i,0) + "\n";
 
         String[] g = inputs;
@@ -242,7 +271,7 @@ public class SignedTransactions {
                 String newValue = value.substring(13,value.length()-1);
                 //BigInteger bi = new BigInteger(newValue, 16);
                 int biLength = newValue.length();
-              //  BigInteger bi2 = BigInteger.valueOf(bi.intValue());
+                //  BigInteger bi2 = BigInteger.valueOf(bi.intValue());
                 tx = tx + little_endian_hex_of_n_bytes(newValue, biLength) + "\n";
             }
             if(g[k].contains("index:")) {
@@ -283,6 +312,8 @@ public class SignedTransactions {
 
         i = Integer.parseInt(transaction[3].substring(transaction[3].lastIndexOf(' ') + 1)); // grab the version number from transaction array (anything after first blank space)
         tx = tx + little_endian_hex_of_n_bytes(i,0) + "\n";
+
+
         String unparsed_script;
         for(int x = 0; x <= outputs.length - 1; x++){
 
@@ -306,6 +337,7 @@ public class SignedTransactions {
 
                 int length = parse_script(unparsed_script).length()/2;
                 tx = tx + length + "\n";
+                System.out.println("weinus " + length);
                 tx = tx + parse_script(unparsed_script) + "\n";
                 // Parse script commands into the appropriate hex codes:
             }
@@ -318,7 +350,7 @@ public class SignedTransactions {
         i = Integer.parseInt(transaction[6].substring(transaction[6].lastIndexOf(' ') + 1)); // grab the version number from transaction array (anything after first blank space)
         s = "0" + i.toString();
         tx = tx + s;
-
+        System.out.println(tx);
         return tx;
 
     }
