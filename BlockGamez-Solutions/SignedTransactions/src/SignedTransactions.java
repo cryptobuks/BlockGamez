@@ -10,7 +10,9 @@ import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.security.NoSuchAlgorithmException;
+import java.security.*;
+import java.security.spec.ECGenParameterSpec;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -31,7 +33,17 @@ public class SignedTransactions {
     BigDecimal change = new BigDecimal("0");
     String[] inputs; Integer constantInSize;
     int k = 0;
-    public static void main(String args[]) throws IOException, NoSuchAlgorithmException {} //Creating Tests
+    public static void main(String args[]) throws IOException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeySpecException, InvalidKeyException {
+
+        String recipientAddress = "1NyiaZHZyBb9qcbwgawsvY9cuPZ43YemAq";
+        String senderAddress = "1AirSwwa8UBKYcjbEEB9ZmgfsFaWwRU4N7";
+
+        String senderprivateKeyWIF = "5JbQUwpTA2AHpxrKB7p86Vn6GrvM56Bt4wgJfpJU4kfwfXqMwYB";
+
+        SignedTransactions createTransaction = new SignedTransactions();
+        createTransaction.NewTransaction(recipientAddress, senderAddress, senderprivateKeyWIF);
+
+    } //Creating Tests
 
     //Add the SATOSHI Constant (100,000,000 Satoshi = 1 BTC)
     public BigDecimal SATOSHI_PER_BITCOIN(){
@@ -52,7 +64,7 @@ public class SignedTransactions {
         return grabbedJsonValue;
     }
 
-    public void NewTransaction(String recipientAddress, String senderAddress, String senderPrivateWIF) throws IOException, NoSuchAlgorithmException {
+    public void NewTransaction(String recipientAddress, String senderAddress, String senderPrivateWIF) throws IOException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeySpecException, InvalidKeyException {
         System.out.println("About to send " + amount + " Bitcoin to address " + recipientAddress + " from address " + senderAddress + " with a transaction fee of: " + transactionFee + "\n");
         /** URLs to blockchain's JSON Values **/
         String sFinalBalance = "https://blockchain.info/address/" + senderAddress + "?format=json"; //just a string
@@ -135,7 +147,7 @@ public class SignedTransactions {
     }
 
     /** Sign and verify the transaction **/
-    public String SignandVerify(String senderAddress, String recipientAddress, BigDecimal amount, String senderPrivateWIF) throws IOException, NoSuchAlgorithmException {
+    public String SignandVerify(String senderAddress, String recipientAddress, BigDecimal amount, String senderPrivateWIF) throws IOException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeySpecException, InvalidKeyException {
         /** Payment Scripts: https://en.bitcoin.it/wiki/Script **/
         String OP_DUP = "OP_DUP"; //Duplicates the top stack item.
         String OP_HASH160 = "OP_HASH160"; //The input is hashed twice: first with SHA-256 and then with RIPEMD-160.
@@ -228,7 +240,7 @@ public class SignedTransactions {
 
 
 
-    public String serialize_transaction(String[] transaction, int inputsValueSize, String[] outputs) throws UnsupportedEncodingException {
+    public String serialize_transaction(String[] transaction, int inputsValueSize, String[] outputs) throws UnsupportedEncodingException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeySpecException, InvalidKeyException {
 
         /** Creating the transaction **/
         String tx = "";
@@ -369,7 +381,7 @@ public class SignedTransactions {
         i = Integer.parseInt(transaction[6].substring(transaction[6].lastIndexOf(' ') + 1)); // grab the version number from transaction array (anything after first blank space)
         s = "0" + i.toString();
         tx = tx + s;
-        System.out.println(tx);
+        System.out.println(toHex(ShaAndPair(tx)));
         return tx;
 
     }
@@ -404,23 +416,39 @@ public class SignedTransactions {
         return newValue;
     }
 
-    public String ShaAndPair(String unsignedTransaction){
+    public byte[] ShaAndPair(String unsignedTransaction) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeySpecException, InvalidKeyException {
 
         byte[] b = unsignedTransaction.getBytes(StandardCharsets.UTF_8); // Java 7+ only
         byte[] sha_once = SHA256hash(b);
         byte[] sha_twice = SHA256hash(sha_once);
 
-//        private static ECDSASignature sign(BigInteger privateKeyForSigning, byte[] hash) {
-//            ECDSASigner signer = new ECDSASigner(new HMacDSAKCalculator(new SHA256Digest()));
-//            ECPrivateKeyParameters privKey = new ECPrivateKeyParameters(privateKeyForSigning, CURVE);
-//            signer.init(true, privKey);
-//            BigInteger[] components = signer.generateSignature(hash);
-//            return new ECDSASignature(components[0], components[1]);
+        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("EC");
+        ECGenParameterSpec ecSpec = new ECGenParameterSpec("secp256k1");
+        keyGen.initialize(ecSpec, new SecureRandom());
+        KeyPair keypair = keyGen.generateKeyPair();
+
+        java.security.Signature sign = java.security.Signature.getInstance("NONEwithECDSA");
+        sign.initSign(keypair.getPrivate());
+        try {
+            sign.update(sha_twice);
+            return sign.sign();
+        } catch (SignatureException e) {
+            e.printStackTrace();
+            byte[] failed = new byte[0];
+            return failed;
+        }
+        
+
+//        public static byte[] signer(byte[] data, PrivateKey key) {
+//            Signature signer = Signature.getInstance("SHA256WithRSA", "BC");
+//            signer.initSign(key);
+//            signer.update(data);
+//            return signer.sign();
 //        }
 
-
-        return "0";
     }
+
+
 
     private byte[] SHA256hash(byte[] enterKey){
         return ByteUtil.SHA256hash(enterKey);
