@@ -9,6 +9,7 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,16 +31,7 @@ public class SignedTransactions {
     BigDecimal change = new BigDecimal("0");
     String[] inputs; Integer constantInSize;
     int k = 0;
-    public static void main(String args[]) throws IOException, NoSuchAlgorithmException {
-
-        String recipientAddress = "1NyiaZHZyBb9qcbwgawsvY9cuPZ43YemAq";
-        String senderAddress = "1AirSwwa8UBKYcjbEEB9ZmgfsFaWwRU4N7";
-
-        String senderprivateKeyWIF = "5JbQUwpTA2AHpxrKB7p86Vn6GrvM56Bt4wgJfpJU4kfwfXqMwYB";
-
-        SignedTransactions createTransaction = new SignedTransactions();
-        createTransaction.NewTransaction(recipientAddress, senderAddress, senderprivateKeyWIF);
-    } //Creating Tests
+    public static void main(String args[]) throws IOException, NoSuchAlgorithmException {} //Creating Tests
 
     //Add the SATOSHI Constant (100,000,000 Satoshi = 1 BTC)
     public BigDecimal SATOSHI_PER_BITCOIN(){
@@ -205,24 +197,7 @@ public class SignedTransactions {
     public String little_endian_hex_of_n_bytes(Integer i , int n){ //This one takes interger values
 
         String iToBase16 = i.toString(i, 16);
-//        if(iToBase16.equals("a")){
-//            iToBase16 = "10";
-//        }
-//        if(iToBase16.equals("b")){
-//            iToBase16 = "11";
-//        }
-//        if(iToBase16.equals("c")){
-//            iToBase16 = "12";
-//        }
-//        if(iToBase16.equals("d")){
-//            iToBase16 = "13";
-//        }
-//        if(iToBase16.equals("e")){
-//            iToBase16 = "14";
-//        }
-//        if(iToBase16.equals("f")){
-//            iToBase16 = "15";
-//        }
+
         String value = "0" + iToBase16+ String.join("", Collections.nCopies(n * 2,"0")); //Also double check this number
         return value;
     }
@@ -314,6 +289,8 @@ public class SignedTransactions {
         i = Integer.parseInt(transaction[3].substring(transaction[3].lastIndexOf(' ') + 1)); // grab the version number from transaction array (anything after first blank space)
         tx = tx + little_endian_hex_of_n_bytes(i,0) + "\n";
 
+        String[] collect = new String[16];
+        String reverse = "";
 
         String unparsed_script;
         for(int x = 0; x <= outputs.length - 1; x++){
@@ -325,48 +302,46 @@ public class SignedTransactions {
 
 
                 String sub = value.substring(8,value.length());
+
                 BigDecimal bigInt = new BigDecimal(sub);
 
 
 
                 BigDecimal finalValue = bigInt.multiply(SATOSHI_PER_BITCOIN());
-
                 Integer intValue = finalValue.intValueExact();
-
+                //    System.out.println("penis " + intValue);
 
                 String j = (little_endian_hex_of_n_bytes(intValue,0) + "\n");
+                int cnt = 1, cnt2 = 0;
+                String store = "";
 
-                if(j.length() % 2 != 0){
-                    j = j + "0";
+                if((j.length() - 1) % 2 != 0 ){
+                    j = j.substring(1);
                 }
-                int count = 2;
-                String newValue = "";
-                String pairs;
 
+                for(int d = 0; d <= j.length() - 1; d++){
 
-                for(int k = 0; k <= j.length() - 1; k++){
-                    if(count % 2 == 0){
-                        pairs =j.substring(k,count);
-                        newValue = newValue + pairs + ",";
+                    store = store + j.charAt(d);
+                    if(cnt % 2 == 0){
+                        collect[cnt2] = String.valueOf(store);
+                        store = "";
+                        cnt2++;
                     }
-                    count++;
+
+                    cnt++;
+                }
+                for(int counter=collect.length - 1; counter >= 0;counter--){
+
+                    if(collect[counter] != null){
+                        reverse = reverse + collect[counter];
+
+
+                    }
                 }
 
-                newValue= newValue.substring(0, newValue.length() - 1); //remove last comma
-                String[] myList = newValue.split(",");
-                Collections.reverse(Arrays.asList(myList));
-                newValue = "";
-                String val = "";
-                for(int k = 0; k<= myList.length - 1; k++){
-                    newValue = newValue + myList[k];
-                }
-                    newValue = newValue.substring(2);
-
-                if(newValue.length() != 16){
-                    int redo = 16 - newValue.length();
-                    val = newValue + String.join("", Collections.nCopies(redo,"0"));
-                }
-                    tx = tx + val + "\n";
+                    reverse = reverse + String.join("", Collections.nCopies((16 - reverse.length()),"0"));
+                    tx = tx + reverse + "\n";
+                    reverse = "";
             }
 
             if(outputs[x].contains("scriptPubKey: ")){
@@ -427,6 +402,24 @@ public class SignedTransactions {
 
 
         return newValue;
+    }
+
+    public String ShaAndPair(String unsignedTransaction){
+
+        byte[] b = unsignedTransaction.getBytes(StandardCharsets.UTF_8); // Java 7+ only
+        byte[] sha_once = SHA256hash(b);
+        byte[] sha_twice = SHA256hash(sha_once);
+
+//        private static ECDSASignature sign(BigInteger privateKeyForSigning, byte[] hash) {
+//            ECDSASigner signer = new ECDSASigner(new HMacDSAKCalculator(new SHA256Digest()));
+//            ECPrivateKeyParameters privKey = new ECPrivateKeyParameters(privateKeyForSigning, CURVE);
+//            signer.init(true, privKey);
+//            BigInteger[] components = signer.generateSignature(hash);
+//            return new ECDSASignature(components[0], components[1]);
+//        }
+
+
+        return "0";
     }
 
     private byte[] SHA256hash(byte[] enterKey){
