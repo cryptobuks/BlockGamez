@@ -1,6 +1,19 @@
 
 import com.google.gson.*;
+import org.bouncycastle.asn1.ocsp.*;
+import org.bouncycastle.asn1.ocsp.Signature;
+import org.bouncycastle.asn1.sec.SECNamedCurves;
+import org.bouncycastle.asn1.x9.X9ECParameters;
+import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.digests.RIPEMD160Digest;
+import org.bouncycastle.crypto.generators.ECKeyPairGenerator;
+import org.bouncycastle.crypto.params.ECDomainParameters;
+import org.bouncycastle.crypto.params.ECKeyGenerationParameters;
+import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
+import org.bouncycastle.crypto.params.ECPublicKeyParameters;
+import org.bouncycastle.crypto.signers.ECDSASigner;
+import org.bouncycastle.math.ec.ECFieldElement;
+import org.bouncycastle.math.ec.ECPoint;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +26,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.ECGenParameterSpec;
 import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -203,6 +217,7 @@ public class SignedTransactions {
 
         /** Serialization Starts Here... **/
         String value1 = serialize_transaction(transaction, inputsValueSize, outputs);
+
         return value1;
     }
 
@@ -378,10 +393,26 @@ public class SignedTransactions {
 
         tx = tx + s + "\n";
 
+        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("EC");
+        ECGenParameterSpec ecSpec = new ECGenParameterSpec("secp256k1");
+        keyGen.initialize(ecSpec, new SecureRandom());
+        KeyPair keypair = keyGen.generateKeyPair();
+
+
         i = Integer.parseInt(transaction[6].substring(transaction[6].lastIndexOf(' ') + 1)); // grab the version number from transaction array (anything after first blank space)
         s = "0" + i.toString();
         tx = tx + s;
-        System.out.println(toHex(ShaAndPair(tx)));
+        String afterShaandPair = toHex(ShaAndPair(tx, keypair));
+        String hashCodeType = "01";
+        String sigPlusHashCodeLength = little_endian_hex_of_n_bytes((afterShaandPair + hashCodeType).length()/2,0);
+        sigPlusHashCodeLength = sigPlusHashCodeLength.substring(1);
+        String pubKeyLength = little_endian_hex_of_n_bytes((toHex(keypair.getPublic().getEncoded()).length()/2),0);
+        pubKeyLength = pubKeyLength.substring(1);
+
+
+        String scriptSig = sigPlusHashCodeLength + " " + afterShaandPair + " " + hashCodeType + " " + pubKeyLength + " " + toHex((keypair.getPublic().getEncoded()));
+        System.out.println(scriptSig);
+
         return tx;
 
     }
@@ -416,19 +447,20 @@ public class SignedTransactions {
         return newValue;
     }
 
-    public byte[] ShaAndPair(String unsignedTransaction) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeySpecException, InvalidKeyException {
+    public byte[] ShaAndPair(String unsignedTransaction, KeyPair keypair) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeySpecException, InvalidKeyException {
 
         byte[] b = unsignedTransaction.getBytes(StandardCharsets.UTF_8); // Java 7+ only
         byte[] sha_once = SHA256hash(b);
         byte[] sha_twice = SHA256hash(sha_once);
 
-        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("EC");
-        ECGenParameterSpec ecSpec = new ECGenParameterSpec("secp256k1");
-        keyGen.initialize(ecSpec, new SecureRandom());
-        KeyPair keypair = keyGen.generateKeyPair();
+
 
         java.security.Signature sign = java.security.Signature.getInstance("NONEwithECDSA");
         sign.initSign(keypair.getPrivate());
+
+
+
+
         try {
             sign.update(sha_twice);
             return sign.sign();
