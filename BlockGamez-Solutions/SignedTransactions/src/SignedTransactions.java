@@ -403,15 +403,23 @@ public class SignedTransactions {
         s = "0" + i.toString();
         tx = tx + s;
         String afterShaandPair = toHex(ShaAndPair(tx, keypair));
+
+        String publicKey = (toHex(keypair.getPublic().getEncoded()));
+        publicKey = publicKey.substring(46);
+        String privateKey = toHex(keypair.getPrivate().getEncoded());
+        privateKey = privateKey.substring(64);
+
         String hashCodeType = "01";
         String sigPlusHashCodeLength = little_endian_hex_of_n_bytes((afterShaandPair + hashCodeType).length()/2,0);
         sigPlusHashCodeLength = sigPlusHashCodeLength.substring(1);
-        String pubKeyLength = little_endian_hex_of_n_bytes((toHex(keypair.getPublic().getEncoded()).length()/2),0);
+        String pubKeyLength = little_endian_hex_of_n_bytes((publicKey.length()/2),0);
         pubKeyLength = pubKeyLength.substring(1);
 
 
-        String scriptSig = sigPlusHashCodeLength + " " + afterShaandPair + " " + hashCodeType + " " + pubKeyLength + " " + toHex((keypair.getPublic().getEncoded()));
+        String scriptSig = sigPlusHashCodeLength + " " + afterShaandPair + " " + hashCodeType + " " + pubKeyLength + " " + publicKey;
+
         System.out.println(scriptSig);
+
 
         return tx;
 
@@ -458,9 +466,12 @@ public class SignedTransactions {
         java.security.Signature sign = java.security.Signature.getInstance("NONEwithECDSA");
         sign.initSign(keypair.getPrivate());
 
+        System.out.println("public: " + toHex(keypair.getPublic().getEncoded()));
+        System.out.println("private: " + toHex(keypair.getPrivate().getEncoded()));
 
+        System.out.println("twice: " + toHex(sha_twice));
 
-
+       //3db1581790d0160be63b930d19cf0d76047b9acb7d8fc3b81460739220ad70ea
         try {
             sign.update(sha_twice);
             return sign.sign();
