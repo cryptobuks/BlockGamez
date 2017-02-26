@@ -252,9 +252,7 @@ public class SignedTransactions {
         }
         return newValue;
     }
-
-
-
+    
     public String serialize_transaction(String[] transaction, int inputsValueSize, String[] outputs) throws UnsupportedEncodingException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeySpecException, InvalidKeyException {
 
         /** Creating the transaction **/
@@ -263,7 +261,6 @@ public class SignedTransactions {
         tx = tx + little_endian_hex_of_n_bytes(i,3) + "\n"; //Double check this number....
         i = Integer.parseInt(transaction[1].substring(transaction[1].lastIndexOf(' ') + 1)); // grab the version number from transaction array (anything after first blank space)
 
-
         tx = tx + little_endian_hex_of_n_bytes(i,0) + "\n";
 
         String[] g = inputs;
@@ -271,9 +268,7 @@ public class SignedTransactions {
             if(g[k].contains("previousTx:")){
                 String value = g[k];
                 String newValue = value.substring(13,value.length()-1);
-                //BigInteger bi = new BigInteger(newValue, 16);
                 int biLength = newValue.length();
-                //  BigInteger bi2 = BigInteger.valueOf(bi.intValue());
                 tx = tx + little_endian_hex_of_n_bytes(newValue, biLength) + "\n";
             }
             if(g[k].contains("index:")) {
@@ -309,7 +304,7 @@ public class SignedTransactions {
 
             if(g[k].contains("sequence_no:")){
                 String[] HexRep = g[k].split(" ");
-                tx = tx + HexRep[1] + "\n";
+                tx = tx + "$" +HexRep[1] + "\n";
             }
         }
 
@@ -327,16 +322,12 @@ public class SignedTransactions {
                 String[] HexRep = outputs[x].split(",");
                 String value = HexRep[0];
 
-
                 String sub = value.substring(8,value.length());
 
                 BigDecimal bigInt = new BigDecimal(sub);
 
-
-
                 BigDecimal finalValue = bigInt.multiply(SATOSHI_PER_BITCOIN());
                 Integer intValue = finalValue.intValueExact();
-                //    System.out.println("penis " + intValue);
 
                 String j = (little_endian_hex_of_n_bytes(intValue,0) + "\n");
                 int cnt = 1, cnt2 = 0;
@@ -354,15 +345,12 @@ public class SignedTransactions {
                         store = "";
                         cnt2++;
                     }
-
                     cnt++;
                 }
                 for(int counter=collect.length - 1; counter >= 0;counter--){
 
                     if(collect[counter] != null){
                         reverse = reverse + collect[counter];
-
-
                     }
                 }
 
@@ -383,9 +371,7 @@ public class SignedTransactions {
 
                 String remZero = little_endian_hex_of_n_bytes(length,0).substring(1);
                 tx = tx + remZero + "\n";
-
                 tx = tx + parse_script(unparsed_script) + "\n";
-                // Parse script commands into the appropriate hex codes:
             }
         }
         i = Integer.parseInt(transaction[5].substring(transaction[5].lastIndexOf(' ') + 1)); // grab the version number from transaction array (anything after first blank space)
@@ -397,7 +383,6 @@ public class SignedTransactions {
         ECGenParameterSpec ecSpec = new ECGenParameterSpec("secp256k1");
         keyGen.initialize(ecSpec, new SecureRandom());
         KeyPair keypair = keyGen.generateKeyPair();
-
 
         i = Integer.parseInt(transaction[6].substring(transaction[6].lastIndexOf(' ') + 1)); // grab the version number from transaction array (anything after first blank space)
         s = "0" + i.toString();
@@ -412,17 +397,25 @@ public class SignedTransactions {
         String hashCodeType = "01";
         String sigPlusHashCodeLength = little_endian_hex_of_n_bytes((afterShaandPair + hashCodeType).length()/2,0);
         sigPlusHashCodeLength = sigPlusHashCodeLength.substring(1);
+        String replace = "";
         String pubKeyLength = little_endian_hex_of_n_bytes((publicKey.length()/2),0);
         pubKeyLength = pubKeyLength.substring(1);
 
+        if(sigPlusHashCodeLength.equals("49")){replace = "8c";}
+        if(sigPlusHashCodeLength.equals("48")){replace = "8b";}
+        if(sigPlusHashCodeLength.equals("47")){replace = "8a";}
 
-        String scriptSig = sigPlusHashCodeLength + " " + afterShaandPair + " " + hashCodeType + " " + pubKeyLength + " " + publicKey;
+        String scriptSig = replace + sigPlusHashCodeLength + " " + afterShaandPair + " " + hashCodeType + " " + pubKeyLength + " " + publicKey;
 
-        System.out.println(scriptSig);
+        int dropScriptSig = tx.indexOf("$");
 
-
+        StringBuilder str = new StringBuilder(tx).replace(86,dropScriptSig,scriptSig);
+        String test = str.toString();
+        test = test.replaceAll("\\s+","");
+        test = test.replaceAll("[-+.$:,]", "");
+        test = test.substring(0,test.length() - 8);
+        System.out.println(test);
         return tx;
-
     }
 
     public String parse_script(String script){
@@ -443,15 +436,8 @@ public class SignedTransactions {
             if(split[split.length - 2].equalsIgnoreCase("OP_EQUALVERIFY")){
                 split[split.length - 2] = "88"; //Hex representation of "OP_EQUALVERIFY
             }
-
             newValue = newValue + split[k];
-
-
         }
-
-
-
-
         return newValue;
     }
 
@@ -461,17 +447,9 @@ public class SignedTransactions {
         byte[] sha_once = SHA256hash(b);
         byte[] sha_twice = SHA256hash(sha_once);
 
-
-
         java.security.Signature sign = java.security.Signature.getInstance("NONEwithECDSA");
         sign.initSign(keypair.getPrivate());
 
-        System.out.println("public: " + toHex(keypair.getPublic().getEncoded()));
-        System.out.println("private: " + toHex(keypair.getPrivate().getEncoded()));
-
-        System.out.println("twice: " + toHex(sha_twice));
-
-       //3db1581790d0160be63b930d19cf0d76047b9acb7d8fc3b81460739220ad70ea
         try {
             sign.update(sha_twice);
             return sign.sign();
@@ -480,30 +458,8 @@ public class SignedTransactions {
             byte[] failed = new byte[0];
             return failed;
         }
-        
-
-//        public static byte[] signer(byte[] data, PrivateKey key) {
-//            Signature signer = Signature.getInstance("SHA256WithRSA", "BC");
-//            signer.initSign(key);
-//            signer.update(data);
-//            return signer.sign();
-//        }
-
     }
-
-
-
     private byte[] SHA256hash(byte[] enterKey){
         return ByteUtil.SHA256hash(enterKey);
     }
-
-    private byte[] RIPEMD160(byte[] enterKey){
-        RIPEMD160Digest digester = new RIPEMD160Digest();
-        byte[] retValue=new byte[digester.getDigestSize()];
-        digester.update(enterKey, 0, enterKey.length);
-        digester.doFinal(retValue, 0);
-        return retValue;
-    }
-
-
 }
