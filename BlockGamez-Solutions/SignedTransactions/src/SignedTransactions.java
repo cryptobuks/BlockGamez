@@ -1,5 +1,10 @@
 
 import com.google.gson.*;
+import org.bitcoinj.core.DumpedPrivateKey;
+import org.bitcoinj.core.ECKey;
+import org.bitcoinj.core.NetworkParameters;
+import org.bitcoinj.core.Sha256Hash;
+import org.bitcoinj.params.MainNetParams;
 import org.bouncycastle.asn1.ocsp.*;
 import org.bouncycastle.asn1.ocsp.Signature;
 import org.bouncycastle.asn1.sec.SECNamedCurves;
@@ -15,6 +20,7 @@ import org.bouncycastle.crypto.signers.ECDSASigner;
 import org.bouncycastle.math.ec.ECFieldElement;
 import org.bouncycastle.math.ec.ECPoint;
 
+import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -252,7 +258,7 @@ public class SignedTransactions {
         }
         return newValue;
     }
-    
+
     public String serialize_transaction(String[] transaction, int inputsValueSize, String[] outputs) throws UnsupportedEncodingException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeySpecException, InvalidKeyException {
 
         /** Creating the transaction **/
@@ -387,26 +393,49 @@ public class SignedTransactions {
         i = Integer.parseInt(transaction[6].substring(transaction[6].lastIndexOf(' ') + 1)); // grab the version number from transaction array (anything after first blank space)
         s = "0" + i.toString();
         tx = tx + s;
-        String afterShaandPair = toHex(ShaAndPair(tx, keypair));
 
-        String publicKey = (toHex(keypair.getPublic().getEncoded()));
-        publicKey = publicKey.substring(46);
-        String privateKey = toHex(keypair.getPrivate().getEncoded());
-        privateKey = privateKey.substring(64);
 
+        // message (hash) to be signed with private key
+        String msg = "15953935a135031bfec37d36a9d662aea43e1deb0ea463d6932ac6e537cb3e81";
+
+        String senderprivateKeyWIF = "5JbQUwpTA2AHpxrKB7p86Vn6GrvM56Bt4wgJfpJU4kfwfXqMwYB";
+
+
+        DumpedPrivateKey dpk = DumpedPrivateKey.fromBase58(null, senderprivateKeyWIF);
+
+        ECKey key = dpk.getKey();
+        NetworkParameters main = MainNetParams.get();
+        String check = key.getPrivateKeyAsWiF(main);
+        String check2 = key.getPublicKeyAsHex();
+        Sha256Hash hash = Sha256Hash.wrap(msg);
+
+        ECKey.ECDSASignature sig = key.sign(hash);
+        byte[] res = sig.encodeToDER();
+        String hex = DatatypeConverter.printHexBinary(res);
+        System.out.println(hex);
+        System.out.println(check2);
+        System.out.println(check);
+
+
+//        String afterShaandPair = toHex(ShaAndPair(tx, keypair));
+//
+//        String publicKey = (toHex(keypair.getPublic().getEncoded()));
+//        publicKey = publicKey.substring(46);
+//        String privateKey = toHex(keypair.getPrivate().getEncoded());
+//        privateKey = privateKey.substring(64);
+//
         String hashCodeType = "01";
-        String sigPlusHashCodeLength = little_endian_hex_of_n_bytes((afterShaandPair + hashCodeType).length()/2,0);
+        String sigPlusHashCodeLength = little_endian_hex_of_n_bytes((hex + hashCodeType).length()/2,0);
         sigPlusHashCodeLength = sigPlusHashCodeLength.substring(1);
         String replace = "";
-        String pubKeyLength = little_endian_hex_of_n_bytes((publicKey.length()/2),0);
+        String pubKeyLength = little_endian_hex_of_n_bytes((check2.length()/2),0);
         pubKeyLength = pubKeyLength.substring(1);
 
         if(sigPlusHashCodeLength.equals("49")){replace = "8c";}
         if(sigPlusHashCodeLength.equals("48")){replace = "8b";}
         if(sigPlusHashCodeLength.equals("47")){replace = "8a";}
 
-        String scriptSig = replace + sigPlusHashCodeLength + " " + afterShaandPair + " " + hashCodeType + " " + pubKeyLength + " " + publicKey;
-
+        String scriptSig = replace + sigPlusHashCodeLength + " " + hex + " " + hashCodeType + " " + pubKeyLength + " " + check2;
         int dropScriptSig = tx.indexOf("$");
 
         StringBuilder str = new StringBuilder(tx).replace(86,dropScriptSig,scriptSig);

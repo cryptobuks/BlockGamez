@@ -53,5 +53,16 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/Downloads/bitcoinj-core-0.14.4-bundled.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/Downloads/bitcoinj-core-0.14.4-bundled.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
   </component>
 </module>
