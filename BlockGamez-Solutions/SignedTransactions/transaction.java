@@ -14,10 +14,43 @@ import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.security.*;
+import java.security.spec.ECGenParameterSpec;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import com.google.gson.*;
+import org.bouncycastle.asn1.ocsp.*;
+import org.bouncycastle.asn1.ocsp.Signature;
+import org.bouncycastle.asn1.sec.SECNamedCurves;
+import org.bouncycastle.asn1.x9.X9ECParameters;
+import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
+import org.bouncycastle.crypto.digests.RIPEMD160Digest;
+import org.bouncycastle.crypto.generators.ECKeyPairGenerator;
+import org.bouncycastle.crypto.params.ECDomainParameters;
+import org.bouncycastle.crypto.params.ECKeyGenerationParameters;
+import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
+import org.bouncycastle.crypto.params.ECPublicKeyParameters;
+import org.bouncycastle.crypto.signers.ECDSASigner;
+import org.bouncycastle.math.ec.ECFieldElement;
+import org.bouncycastle.math.ec.ECPoint;
+import org.bouncycastle.util.encoders.Hex;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.security.*;
+import java.security.spec.ECGenParameterSpec;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * Created by tiefenb7 on 2/28/17.
@@ -38,25 +71,26 @@ public class transaction {
     String senderHexString = "";
     String recipientHexString = "";
 
-    public static void main(String args[]) throws IOException {
+    public static void main(String args[]) throws IOException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, InvalidKeyException {
 
-        String recipientAddress = "1NyiaZHZyBb9qcbwgawsvY9cuPZ43YemAq";
-        String senderAddress = "1AirSwwa8UBKYcjbEEB9ZmgfsFaWwRU4N7";
+        String recipientAddress = "ADD RECIPIENT ADDRESS HERE";
+        String senderAddress = "ADD SENDER ADDRESS HERE";
 
-        String senderprivateKeyWIF = "5JbQUwpTA2AHpxrKB7p86Vn6GrvM56Bt4wgJfpJU4kfwfXqMwYB";
+        String senderprivateKeyWIF = "ADD SENDER PRIVATE WIF HERE";
 
         transaction createTransaction = new transaction();
-      //  createTransaction.Inputs(recipientAddress,senderAddress,senderprivateKeyWIF);
-      //  createTransaction.Outputs(senderAddress, recipientAddress, amount, change);
         String[] createTX = createTransaction.ConstructTransaction(createTransaction.Inputs(recipientAddress,senderAddress,senderprivateKeyWIF),createTransaction.Outputs(senderAddress, recipientAddress, amount, change));
-      //  System.out.println(createTX);
         String UnsignedTransaction = createTransaction.SerializeTransaction(createTX);
 
 
         String scriptSig = createTransaction.SignAndVerify(senderprivateKeyWIF, UnsignedTransaction);
         String[] finalize = createTransaction.FinalizeTransaction(scriptSig,UnsignedTransaction);
         String tx = createTransaction.SerializeTransaction(finalize);
-        System.out.println(tx);
+
+        StringBuilder removeUnesscessaryStuff = new StringBuilder(tx);
+        String remove = removeUnesscessaryStuff.toString();
+        remove = remove.replaceAll("\\s+","");
+        System.out.println(remove);
 
     } //Creating Tests
 
@@ -135,7 +169,7 @@ public class transaction {
             //Locate the existing scriptPubKey ("script" inside Blockchain);
             JsonElement reversedTxHash = getJsonValue.get("tx_hash_big_endian"); inputs[k] = "previousTx:" + String.valueOf(reversedTxHash) + "#"; //Reversed Previous TX Hash
             JsonElement index = getJsonValue.get("tx_output_n"); inputs[k+1] = "index:" + String.valueOf(index) + "#";
-           // inputs[k+2] = "scriptSig:" + null +  "# ";
+            // inputs[k+2] = "scriptSig:" + null +  "# ";
             k = k + 2;
             BigDecimal amount = new BigDecimal(String.valueOf(getJsonValue.get("value"))).divide(SATOSHI_PER_BITCOIN());
             input_total = input_total.add(amount);
@@ -146,7 +180,7 @@ public class transaction {
             if((res2 == 0) || (res2 == 1)){ break;} //we have the amount we need for this transaction
 
         }
-            change = input_total.subtract(transactionFee).subtract(amount);
+        change = input_total.subtract(transactionFee).subtract(amount);
 
         int res3;
         res3 = input_total.compareTo(amount.add(transactionFee));
@@ -162,11 +196,6 @@ public class transaction {
         }
 
         return inputs;
-
-
-
-
-
 
     }
 
@@ -209,8 +238,6 @@ public class transaction {
 
 
         String inputsCollect = "";
-
-
         String scriptSig = outputs[3];
         scriptSig = scriptSig.substring(13);
 
@@ -232,8 +259,6 @@ public class transaction {
 
         }
 
-
-
         String outputsCollect = "";
         List<String> list2 = new ArrayList<String>(Arrays.asList(outputs));
         list2.removeAll(Collections.singleton(null));
@@ -243,10 +268,7 @@ public class transaction {
             outputsCollect = outputsCollect + removeAllNulls2[i];
 
 
-
         }
-
-
 
         String[] tx = new String[10];
 
@@ -259,22 +281,14 @@ public class transaction {
         tx[5]  = "locktime:0";
         tx[6]  = "hash_code_type:01000000";
 
-
-
         return tx;
     }
 
     public String SerializeTransaction(String[] transaction)
     {
 
-//        for(int i = 0; i <= transaction.length -1; i++)
-//        {
-//            System.out.println(transaction[i]);
-//        }
-
         String tx = "";
 
-       // String[] parse = transaction.split("@");
         String value = transaction[0];
         String newValue = value.substring(8);
         BigInteger version = new BigInteger(newValue,16);
@@ -287,7 +301,6 @@ public class transaction {
         tx = tx + LittleEndianHex(version,1) + "\n";
         finalTrans[1] = "in_counter:" + newValue;
 
-     //   System.out.println(transaction[2]);
         String[] parseInputs = transaction[2].split("@");
         String removeInputsSTR = parseInputs[0];
         removeInputsSTR = removeInputsSTR.substring(7);
@@ -305,12 +318,12 @@ public class transaction {
                 if(inputs[k].contains("previousTx:"))
                 {
 
-                value = inputs[k];
-                newValue = value.substring(11);
-                String removeFirstAndLast = newValue.substring(1,newValue.length()-1);
-                version = new BigInteger(removeFirstAndLast,16);
-                tx = tx + LittleEndianHex(version,removeFirstAndLast.length()/2) + "\n";
-                saveInputs = saveInputs + "previousTx:" + newValue+ "#";
+                    value = inputs[k];
+                    newValue = value.substring(11);
+                    String removeFirstAndLast = newValue.substring(1,newValue.length()-1);
+                    version = new BigInteger(removeFirstAndLast,16);
+                    tx = tx + LittleEndianHex(version,removeFirstAndLast.length()/2) + "\n";
+                    saveInputs = saveInputs + "previousTx:" + newValue+ "#";
                 }
                 if(inputs[k].contains("index:"))
                 {
@@ -361,32 +374,28 @@ public class transaction {
             tx = tx + LittleEndianHex(version,1) + "\n";
             finalTrans[3] = "out_counter:" + newValue;
         }
-     //   tx = tx +
+
 
         String[] parseOutputs = transaction[4].split("@");
         String removeOutputsSTR = parseOutputs[0];
         removeOutputsSTR = removeOutputsSTR.substring(8);
         parseOutputs[0] = removeOutputsSTR;
         String saveOutputs = "outputs:";
-//
-//
+
         for(int i =0; i <= parseOutputs.length -1; i++)
         {
             String[] outputs = parseOutputs[i].split("#");
 
             for(int k = 0; k <= outputs.length-1; k++)
             {
-               // System.out.println(outputs[k]);
                 if(outputs[k].contains("value:"))
                 {
 
                     value = outputs[k];
                     newValue = value.substring(6);
-                  //  System.out.println(newValue);
                     BigDecimal multiply;
                     multiply = new BigDecimal(newValue).multiply(SATOSHI_PER_BITCOIN());
                     int intversion = multiply.intValue();
-                    //System.out.println(multiply.toBigInteger().toString());
                     tx = tx + LittleEndianTOHexString(intversion,8) + "\n";
                     saveOutputs = saveOutputs + "value:" + newValue + "#";
                 }
@@ -399,7 +408,6 @@ public class transaction {
                     String test = str.toString();
                     test = test.replaceAll("\\s+","");
                     int intversion = test.length()/2;
-                   // System.out.println(test.toString().length()/2);
                     tx = tx + LittleEndianTOHexString(intversion,1) + "\n";
                     saveOutputs = saveOutputs + intversion + "#";
                     tx = tx + test + "\n";
@@ -493,48 +501,32 @@ public class transaction {
         return reverse;
     }
 
-    public String SignAndVerify(String senderprivateKeyWIF, String UnsignedTransaction)
-    {
-        byte[] senderprivateKeyWIFHex = Base58.decode(senderprivateKeyWIF);
-        String senderprivateKeyWIFHexString = toHex(senderprivateKeyWIFHex);
+    public String SignAndVerify(String senderprivateKeyWIF, String UnsignedTransaction) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException {
 
         StringBuilder removeUnesscessaryStuff = new StringBuilder(UnsignedTransaction);
         String remove = removeUnesscessaryStuff.toString();
         remove = remove.replaceAll("\\s+","");
 
-       // Sha256Hash shaonce = new Sha256Hash(remove);
-       // System.out.println(shaonce);
-        //
-//        String removeFirstByteandRemoveLast4 = senderprivateKeyWIFHexString.substring(2,senderprivateKeyWIFHexString.length()-8);
-//
-//
-//        // message (hash) to be signed with private key
-        String msg = "15953935a135031bfec37d36a9d662aea43e1deb0ea463d6932ac6e537cb3e81";
-        byte[] b = remove.getBytes(StandardCharsets.UTF_8); // Java 7+ only
-        byte[] sha_once = SHA256hash(b);
-        byte[] sha_twice = SHA256hash(sha_once);
-
-       // System.out.println(toHex(sha_once));
+        String DoubleSha256Hash = (bytesToHex(gen(Hex.decode(remove))));
 
         DumpedPrivateKey dpk = DumpedPrivateKey.fromBase58(null, senderprivateKeyWIF);
 
         ECKey key = dpk.getKey();
         NetworkParameters main = MainNetParams.get();
-        String check = key.getPrivateKeyAsWiF(main);
-        String check2 = key.getPublicKeyAsHex();
-        Sha256Hash hash = Sha256Hash.wrap(sha_once);
+        String privateKey = key.getPrivateKeyAsWiF(main);
+        String publicKey = key.getPublicKeyAsHex();
+        Sha256Hash hash = Sha256Hash.wrap(DoubleSha256Hash);
 
 
         ECKey.ECDSASignature sig = key.sign(hash);
         byte[] res = sig.encodeToDER();
         String hex = DatatypeConverter.printHexBinary(res);
-       // System.out.println(hex);
 
         String hashCodeType = "01";
         String signaturePlusHashCodeLength = LittleEndianTOHexString((hex + hashCodeType).length()/2,1);
-        String pubKeyLength = LittleEndianTOHexString(check2.length()/2,1);
+        String pubKeyLength = LittleEndianTOHexString(publicKey.length()/2,1);
 
-        String scriptSig = signaturePlusHashCodeLength + " " + hex + " " + hashCodeType + " " + pubKeyLength + " " + check2;
+        String scriptSig = signaturePlusHashCodeLength + " " + hex + " " + hashCodeType + " " + pubKeyLength + " " + publicKey;
 
         return scriptSig;
 
@@ -542,8 +534,7 @@ public class transaction {
 
     public String[] FinalizeTransaction(String scriptSig, String UnsignedTransaction)
     {
-       // System.out.println(scriptSig);
-       // System.out.println(UnsignedTransaction);
+
 
         StringBuilder removeUnesscessaryStuff = new StringBuilder(scriptSig);
         String remove = removeUnesscessaryStuff.toString();
@@ -581,17 +572,9 @@ public class transaction {
         }
 
         finalTrans[2] = updateWithNewValues.substring(0,updateWithNewValues.length()-1);
-//
-//        for(int g = 0; g <= finalTrans.length - 1; g++)
-//        {
-//            System.out.println(finalTrans[g]);
-//        }
+
 
         return finalTrans;
-    }
-
-    private byte[] SHA256hash(byte[] enterKey){
-        return ByteUtil.SHA256hash(enterKey);
     }
 
     public static String toHex(byte[] data) {
@@ -602,4 +585,33 @@ public class transaction {
         return sb.toString();
     }
 
+    final protected static char[] hexArray = "0123456789abcdef".toCharArray();
+
+    public static byte[] gen(byte[] input) {
+
+        MessageDigest digester = null;
+        try {
+            digester = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return digester.digest(digester.digest(input));
+    }
+
+    private static String bytesToHex(final byte[] bytes) {
+        char[] hexChars = new char[bytes.length * 2];
+
+        for (int j = 0; j < bytes.length; j++) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = hexArray[v >>> 4];
+            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+        }
+
+        return new String(hexChars);
+    }
+
+
 }
+
