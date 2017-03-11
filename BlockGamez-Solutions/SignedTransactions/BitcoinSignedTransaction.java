@@ -13,44 +13,14 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.security.*;
-import java.security.spec.ECGenParameterSpec;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import com.google.gson.*;
-import org.bouncycastle.asn1.ocsp.*;
-import org.bouncycastle.asn1.ocsp.Signature;
-import org.bouncycastle.asn1.sec.SECNamedCurves;
-import org.bouncycastle.asn1.x9.X9ECParameters;
-import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
-import org.bouncycastle.crypto.digests.RIPEMD160Digest;
-import org.bouncycastle.crypto.generators.ECKeyPairGenerator;
-import org.bouncycastle.crypto.params.ECDomainParameters;
-import org.bouncycastle.crypto.params.ECKeyGenerationParameters;
-import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
-import org.bouncycastle.crypto.params.ECPublicKeyParameters;
-import org.bouncycastle.crypto.signers.ECDSASigner;
-import org.bouncycastle.math.ec.ECFieldElement;
-import org.bouncycastle.math.ec.ECPoint;
 import org.bouncycastle.util.encoders.Hex;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.security.*;
-import java.security.spec.ECGenParameterSpec;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.X509EncodedKeySpec;
-import java.util.Arrays;
-import java.util.Collections;
+
 
 /**
  * Created by tiefenb7 on 2/28/17.
@@ -169,7 +139,7 @@ public class transaction {
             //Locate the existing scriptPubKey ("script" inside Blockchain);
             JsonElement reversedTxHash = getJsonValue.get("tx_hash_big_endian"); inputs[k] = "previousTx:" + String.valueOf(reversedTxHash) + "#"; //Reversed Previous TX Hash
             JsonElement index = getJsonValue.get("tx_output_n"); inputs[k+1] = "index:" + String.valueOf(index) + "#";
-            // inputs[k+2] = "scriptSig:" + null +  "# ";
+           // inputs[k+2] = "scriptSig:" + null +  "# ";
             k = k + 2;
             BigDecimal amount = new BigDecimal(String.valueOf(getJsonValue.get("value"))).divide(SATOSHI_PER_BITCOIN());
             input_total = input_total.add(amount);
@@ -180,7 +150,7 @@ public class transaction {
             if((res2 == 0) || (res2 == 1)){ break;} //we have the amount we need for this transaction
 
         }
-        change = input_total.subtract(transactionFee).subtract(amount);
+            change = input_total.subtract(transactionFee).subtract(amount);
 
         int res3;
         res3 = input_total.compareTo(amount.add(transactionFee));
@@ -318,12 +288,12 @@ public class transaction {
                 if(inputs[k].contains("previousTx:"))
                 {
 
-                    value = inputs[k];
-                    newValue = value.substring(11);
-                    String removeFirstAndLast = newValue.substring(1,newValue.length()-1);
-                    version = new BigInteger(removeFirstAndLast,16);
-                    tx = tx + LittleEndianHex(version,removeFirstAndLast.length()/2) + "\n";
-                    saveInputs = saveInputs + "previousTx:" + newValue+ "#";
+                value = inputs[k];
+                newValue = value.substring(11);
+                String removeFirstAndLast = newValue.substring(1,newValue.length()-1);
+                version = new BigInteger(removeFirstAndLast,16);
+                tx = tx + LittleEndianHex(version,removeFirstAndLast.length()/2) + "\n";
+                saveInputs = saveInputs + "previousTx:" + newValue+ "#";
                 }
                 if(inputs[k].contains("index:"))
                 {
@@ -614,4 +584,5 @@ public class transaction {
 
 
 }
+
 
