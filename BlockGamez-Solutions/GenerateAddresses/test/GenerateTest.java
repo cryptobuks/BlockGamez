@@ -2,7 +2,9 @@ import org.junit.jupiter.api.Test;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -10,6 +12,13 @@ import static org.junit.jupiter.api.Assertions.*;
  * Created by arjun on 12/17/16.
  */
 class GenerateTest {
+
+    @Test
+    public void testGeneratePubPriv() throws NoSuchAlgorithmException, IOException, InvalidAlgorithmParameterException, NoSuchProviderException {
+        Generate gen = new Generate();
+        gen.generatePubPriv("hello");
+    }
+
 
     @Test
     public void testPrivateWIFGenerate_1() throws NoSuchAlgorithmException, IOException {

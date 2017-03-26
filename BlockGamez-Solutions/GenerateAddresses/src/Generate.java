@@ -20,10 +20,11 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import javax.xml.bind.DatatypeConverter;
+import java.security.spec.ECGenParameterSpec;
 import java.util.Base64;
 import java.util.List;
 import java.util.Scanner;
-import org.junit.*;
+
 
 
 
@@ -37,7 +38,7 @@ public class Generate {
 
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     String first = "first", second = "second", third = "third", fourth = "forth", fifth = "fifth", sixth = "sixth";
-    private X9ECParameters ecp = SECNamedCurves.getByName("secp256k1");
+    //private X9ECParameters ecp = SECNamedCurves.getByName("secp256k1");
 
     public static void main(String[] argv) throws IOException, NoSuchAlgorithmException {}
 
@@ -77,18 +78,18 @@ public class Generate {
         return first + second + third + fourth + fifth + sixth;
     }
 
-    public AsymmetricCipherKeyPair generateKeyPair(String stringValue) throws NoSuchAlgorithmException, IOException
+    public AsymmetricCipherKeyPair generateKeyPair(String seedValue) throws NoSuchAlgorithmException, IOException
     {
 
         // Use secure hash algorithm to convert into byte array to be set as Secure Random seed
 
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        byte[] seed = digest.digest(stringValue.getBytes("UTF-8"));
+        byte[] seed = digest.digest(seedValue.getBytes("UTF-8"));
 
 
 
         // Use secp256k1 named curve to generate ECDSA points for Bitcoin addresses
-        //X9ECParameters ecp = SECNamedCurves.getByName("secp256k1");
+        X9ECParameters ecp = SECNamedCurves.getByName("secp256k1");
         ECDomainParameters domainParams = new ECDomainParameters(ecp.getCurve(),
                 ecp.getG(), ecp.getN(), ecp.getH(),
                 ecp.getSeed());
@@ -102,61 +103,28 @@ public class Generate {
         return keyPair;
     }
 
+    private  KeyPair getKeyPair() throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {
+        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("ECDsA", "SC");
+        ECGenParameterSpec ecSpec = new ECGenParameterSpec("secp256k1");
+        keyGen.initialize(ecSpec, new SecureRandom());
+        return keyGen.generateKeyPair();
+    }
+
     public String privateToWif(byte[] privateKey)
     {
-        byte[] newValue80Front = Add80Byte(privateKey);
-        System.out.println("Add Byte 80 " + toHex(newValue80Front));
-
-        byte[] newValue256 = SHA256hash(newValue80Front);
-        System.out.println("SHA256 " + toHex(newValue256));
-
-        byte[] newValue256Again = SHA256hash(newValue256);
-        System.out.println("SHA256 Again " + toHex(newValue256Again));
-
-        byte[] grabFourBytes = GrabFirstFourBytes(newValue256Again);
-        System.out.println("GrabFirstFour " + toHex(grabFourBytes));
-
-        byte[] keyAndCheckSum = AddChecksumEndOfKey(newValue80Front,grabFourBytes);
-        System.out.println("Add Checksum " + toHex(keyAndCheckSum));
-
-        String WIF = Base58.encode(keyAndCheckSum);
-        System.out.println("Private Key WIF " + WIF);
-        System.out.println("");
-
-        return WIF;
+        WalletGenerateInterface bitCoin = new BitCoinWalletGenerate();
+        return bitCoin.privateToWif(privateKey);
     }
 
     public String publicToWif(byte[] publicKey)
     {
-        byte[] newValue256 = SHA256hash(publicKey);
-        System.out.println("SHA256 " + toHex(newValue256));
-
-        byte[] newValue160 = RIPEMD160(newValue256);
-        System.out.println("RIPEMD160 " + toHex(newValue160));
-
-        byte[] newValueNetwork = AddNetworkBytes(newValue160);
-        System.out.println("ADDBYTES " + toHex(newValueNetwork));
-
-        byte[] re_SHA256_First = SHA256hash(newValueNetwork);
-        System.out.println("SHA256Again " + toHex(re_SHA256_First));
-
-        byte[] re_SHA256_Second = SHA256hash(re_SHA256_First);
-        System.out.println("SHA256AgainSecondTime " + toHex(re_SHA256_Second));
-
-        byte[] grabFourBytes = GrabFirstFourBytes(re_SHA256_Second);
-        System.out.println("GrabFirstFour " + toHex(grabFourBytes));
-
-        byte[] AddSeven = AddSevenEndOfNetworkByte(grabFourBytes, newValueNetwork);
-        System.out.println("AddFourBytesToNetwork " + toHex(AddSeven));
-
-        String WIF = Base58.encode(AddSeven);
-        System.out.println("Bitcoin Address " + WIF);
-        return WIF;
+        WalletGenerateInterface bitCoin = new BitCoinWalletGenerate();
+        return bitCoin.publicToWif(publicKey);
     }
 
-    public void generatePubPriv(String UserSetString) throws NoSuchAlgorithmException, IOException {
+    public void generatePubPriv(String seedValue) throws NoSuchAlgorithmException, IOException {
 
-        AsymmetricCipherKeyPair keyPair = generateKeyPair(UserSetString);
+        AsymmetricCipherKeyPair keyPair = generateKeyPair(seedValue);
 
         //Grab the pub and priv from keypair generated above
         ECPrivateKeyParameters privateKey = (ECPrivateKeyParameters) keyPair.getPrivate();
@@ -213,59 +181,4 @@ public class Generate {
 
     }
 
-    private byte[] SHA256hash(byte[] enterKey){
-        /*SHA256Digest digester=new SHA256Digest();
-        byte[] retValue=new byte[digester.getDigestSize()];
-        digester.update(enterKey, 0, enterKey.length);
-        digester.doFinal(retValue, 0);
-        return retValue;*/
-        return ByteUtil.SHA256hash(enterKey);
-    }
-
-
-    private byte[] RIPEMD160(byte[] enterKey){
-        RIPEMD160Digest digester = new RIPEMD160Digest();
-        byte[] retValue=new byte[digester.getDigestSize()];
-        digester.update(enterKey, 0, enterKey.length);
-        digester.doFinal(retValue, 0);
-        return retValue;
-    }
-
-    private byte[] concateByteArrays(byte[] frontByteArray,byte[] backByteArray)
-    {
-        return ByteUtil.concateByteArrays(frontByteArray,backByteArray);
-    }
-
-    private byte[] Add80Byte(byte[] enterKey)
-    {
-        byte[] eightyByte = {(byte)0x80};
-        return concateByteArrays(eightyByte,enterKey);
-    }
-
-    private byte[] AddNetworkBytes(byte[] enterKey){
-
-        byte[] networkByte = {(byte) 0x0 };
-        return concateByteArrays(networkByte,enterKey);
-    }
-
-    private byte[] GrabFirstFourBytes(byte[] enterKey){
-
-        byte[] firstFourBytes = new byte[4];
-
-        for(int i = 0; i < firstFourBytes.length; i++){
-            firstFourBytes[i] = enterKey[i];
-        }
-
-        return  firstFourBytes;
-    }
-
-    private byte[] AddSevenEndOfNetworkByte(byte[] firstFour, byte[] NetworkByteArray)
-    {
-        return concateByteArrays(NetworkByteArray,firstFour);
-    }
-
-    private byte[] AddChecksumEndOfKey(byte[] key,byte[] checksum)
-    {
-        return concateByteArrays(key,checksum);
-    }
 }
